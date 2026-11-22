@@ -1,0 +1,87 @@
+{
+  "day": 2,
+  "date": "2026-11-22",
+  "story": {
+    "title": "The Young Marshal takes over, 1928",
+    "content": "On 4 June 1928, Zhang Xueliang's father, Zhang Zuolin (张作霖), the \"Old Marshal\" of the Northeast, was killed when his train was blown up at Huanggutun (皇姑屯) near Shenyang by officers of Japan's Kwantung Army. Zhang Xueliang, then in his twenties and already known as the \"Young Marshal\" (少帅), took command of the Northeast. On 29 December 1928 he ordered the Nationalist flag raised across the region, the \"Northeast Flag Replacement\" (东北易帜), which completed the nominal reunification of China. That choice for national unity runs through his later story.",
+    "keySentence": {
+      "chinese": "一九二八年，张学良接管了东北。",
+      "pinyin": "Yī jiǔ èr bā nián, Zhāng Xuéliáng jiēguǎn le Dōngběi.",
+      "english": "In 1928, Zhang Xueliang took charge of the Northeast."
+    }
+  },
+  "vocabulary": [
+    {
+      "chinese": "祖父",
+      "pinyin": "zǔfù",
+      "english": "grandfather (father's father, formal)",
+      "example": "我的祖父是张学良。Wǒ de zǔfù shì Zhāng Xuéliáng."
+    },
+    {
+      "chinese": "停止",
+      "pinyin": "tíngzhǐ",
+      "english": "to stop",
+      "example": "雨停止了。Yǔ tíngzhǐ le."
+    },
+    {
+      "chinese": "内战",
+      "pinyin": "nèizhàn",
+      "english": "civil war",
+      "example": "他希望停止内战。Tā xīwàng tíngzhǐ nèizhàn."
+    },
+    {
+      "chinese": "一致",
+      "pinyin": "yízhì [dict. yīzhì]",
+      "english": "united, in agreement",
+      "example": "大家意见一致。Dàjiā yìjiàn yízhì."
+    },
+    {
+      "chinese": "自由",
+      "pinyin": "zìyóu",
+      "english": "freedom",
+      "example": "他失去了自由。Tā shīqù le zìyóu."
+    }
+  ],
+  "practiceLines": [
+    {
+      "chinese": "九十年前，我的祖父和杨虎城将军，为了停止内战、一致抗日，发动了西安事变。",
+      "pinyin": "Jiǔshí nián qián, wǒ de zǔfù hé Yáng Hǔchéng jiāngjūn, wèile tíngzhǐ nèizhàn, yízhì kàng Rì, fādòng le Xī'ān Shìbiàn.",
+      "english": "Ninety years ago, to stop the civil war and unite against Japan, my grandfather and General Yang Hucheng launched the Xi'an Incident.",
+      "audioUrl": "/audio/daily/day-02/lines/line_02.mp3"
+    },
+    {
+      "chinese": "此后，他失去自由五十多年。",
+      "pinyin": "Cǐhòu, tā shīqù zìyóu wǔshí duō nián.",
+      "english": "Afterward, he lost his freedom for more than fifty years.",
+      "audioUrl": "/audio/daily/day-02/lines/line_03.mp3"
+    },
+    {
+      "chinese": "我的祖母赵一荻，一直陪在他身边。",
+      "pinyin": "Wǒ de zǔmǔ Zhào Yīdí, yìzhí péi zài tā shēnbiān.",
+      "english": "My grandmother Zhao Yidi was always by his side.",
+      "audioUrl": "/audio/daily/day-02/lines/line_04.mp3"
+    }
+  ],
+  "pronunciationTip": "Line 4 is the longest line in the speech. Take a short breath at each comma: 九十年前 / 我的祖父和杨虎城将军 / 为了停止内战、一致抗日 / 发动了西安事变. Three different 一 tones today: 一致 yízhì (before a 4th tone), 一直 yìzhí (before a 2nd tone), and 赵一荻 Zhào Yīdí (in a name, it stays yī). 祖母 zǔmǔ is two 3rd tones, so you say \"zú-mǔ\".\n**Daily run-through:** read all 14 lines of the main speech aloud once (about 90 sec), then listen to full_speech_normal.mp3 once.",
+  "quiz": [
+    {
+      "id": "q2-1",
+      "type": "character-to-meaning",
+      "question": "What does 凌晨 (língchén) mean?",
+      "correct": "before dawn, the early-morning hours",
+      "options": [
+        "before dawn, the early-morning hours"
+      ]
+    }
+  ],
+  "audioFiles": {
+    "story": "/audio/daily/day-02/lines/line_01.mp3",
+    "vocab": [
+      "/audio/daily/day-02/words.mp3"
+    ],
+    "shadowing": "/audio/daily/day-02/shadowing.mp3",
+    "words": "/audio/daily/day-02/words.mp3",
+    "fullNormal": "/audio/daily/day-02/full_normal.mp3",
+    "fullSlow": "/audio/daily/day-02/full_slow.mp3"
+  }
+}

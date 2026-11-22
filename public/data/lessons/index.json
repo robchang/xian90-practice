@@ -5,6 +5,12 @@
       "date": "2026-11-21",
       "title": "Sat 21 Nov 2026",
       "file": "day-01.json"
+    },
+    {
+      "day": 2,
+      "date": "2026-11-22",
+      "title": "Sun 22 Nov 2026",
+      "file": "day-02.json"
     }
   ]
 }
