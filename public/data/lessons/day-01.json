@@ -1,0 +1,74 @@
+{
+  "day": 1,
+  "date": "2026-11-21",
+  "story": {
+    "title": "Before dawn at Huaqing Pool",
+    "content": "In December 1936, Chiang Kai-shek (蒋介石) was staying at Huaqing Pool (华清池) in Lintong, just east of Xi'an. Early on 12 December, troops under Zhang Xueliang went to the compound; Chiang escaped up the slope of Mount Li behind it and was found there a few hours later and held. That same day, Zhang Xueliang and Yang Hucheng (杨虎城) sent a telegram to the whole country with eight demands, starting with stopping the civil war and uniting to resist Japan. The crisis ended peacefully on 25 December, when Chiang was released and Zhang flew with him to Nanjing.",
+    "keySentence": {
+      "chinese": "十二月十二日凌晨，事变在华清池发生。",
+      "pinyin": "Shí'èr yuè shí'èr rì língchén, shìbiàn zài Huáqīng Chí fāshēng.",
+      "english": "The Incident began at Huaqing Pool before dawn on 12 December."
+    }
+  },
+  "vocabulary": [
+    {
+      "chinese": "尊敬",
+      "pinyin": "zūnjìng",
+      "english": "respected, honored",
+      "example": "尊敬的各位来宾。Zūnjìng de gèwèi láibīn."
+    },
+    {
+      "chinese": "来宾",
+      "pinyin": "láibīn",
+      "english": "guests (formal)",
+      "example": "欢迎各位来宾！Huānyíng gèwèi láibīn!"
+    },
+    {
+      "chinese": "主办方",
+      "pinyin": "zhǔbànfāng",
+      "english": "the hosts, organizers",
+      "example": "主办方很热情。Zhǔbànfāng hěn rèqíng."
+    },
+    {
+      "chinese": "邀请",
+      "pinyin": "yāoqǐng",
+      "english": "to invite",
+      "example": "谢谢你邀请我。Xièxie nǐ yāoqǐng wǒ."
+    },
+    {
+      "chinese": "凌晨",
+      "pinyin": "língchén",
+      "english": "before dawn",
+      "example": "事变发生在凌晨。Shìbiàn fāshēng zài língchén."
+    }
+  ],
+  "practiceLines": [
+    {
+      "chinese": "尊敬的各位领导、各位来宾：大家好！",
+      "pinyin": "Zūnjìng de gèwèi lǐngdǎo, gèwèi láibīn: dàjiā hǎo!",
+      "english": "Respected leaders, distinguished guests: hello, everyone!"
+    },
+    {
+      "chinese": "我叫张居信，是张学良将军的孙子。",
+      "pinyin": "Wǒ jiào Zhāng Jūxìn, shì Zhāng Xuéliáng jiāngjūn de sūnzi.",
+      "english": "My name is Zhang Juxin. I am General Zhang Xueliang's grandson."
+    },
+    {
+      "chinese": "感谢主办方邀请我来到北京。",
+      "pinyin": "Gǎnxiè zhǔbànfāng yāoqǐng wǒ láidào Běijīng.",
+      "english": "Thank you to the hosts for inviting me to Beijing."
+    }
+  ],
+  "pronunciationTip": "领导 lǐngdǎo is two 3rd tones together, so you say \"líng-dǎo\". The same thing happens in 请我 qǐng wǒ (\"qíng wǒ\"). 孙子 sūnzi ends in a neutral tone; keep 子 light.\n**Daily run-through:** read all 14 lines of the main speech aloud once (about 90 sec). See Doc 4, Main Speech.",
+  "quiz": [
+    {
+      "id": "q1-1",
+      "type": "character-to-meaning",
+      "question": "What does 孙子 (sūnzi) mean?",
+      "correct": "grandson, a son's son",
+      "options": [
+        "grandson, a son's son"
+      ]
+    }
+  ]
+}
