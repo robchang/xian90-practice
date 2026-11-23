@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:whisper": "vite-node scripts/test-whisper-score.mjs",
+    "test:vad-mic": "vite-node scripts/test-vad-mic.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"

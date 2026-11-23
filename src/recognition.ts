@@ -24,7 +24,9 @@ export interface SpeechRecognitionLike {
   onend: (() => void) | null
 }
 
-export function startLiveRecognition(): {
+export function startLiveRecognition(opts?: {
+  shouldContinue?: () => boolean
+}): {
   stop: () => void
   result: Promise<string | null>
   supported: boolean
@@ -35,44 +37,72 @@ export function startLiveRecognition(): {
   }
   const recognition = new Ctor()
   recognition.lang = 'zh-CN'
+  // iOS often ends a non-continuous session immediately with no-speech.
+  // We still use non-continuous (more reliable on iOS) and restart while recording.
   recognition.continuous = false
   recognition.interimResults = false
   recognition.maxAlternatives = 1
 
-  let settled = false
+  let stopped = false
+  let restartTimer = 0
   let transcript: string | null = null
   let resolveFn: (value: string | null) => void = () => {}
   const result = new Promise<string | null>((resolve) => {
     resolveFn = resolve
   })
-  const settle = (value: string | null) => {
-    if (settled) return
-    settled = true
-    resolveFn(value)
+  const settle = () => {
+    if (stopped) return
+    stopped = true
+    resolveFn(transcript)
+  }
+
+  const startSafe = () => {
+    if (stopped) return
+    try {
+      recognition.start()
+    } catch {
+      // already started or not allowed
+    }
   }
 
   recognition.onresult = (event) => {
-    const first = event.results[0]
-    if (first) transcript = first[0].transcript || ''
-    settle(transcript)
+    const first = event.results[event.results.length - 1] || event.results[0]
+    const text = first?.[0]?.transcript || ''
+    if (text.trim()) transcript = text
+    // Do not settle or stop the mic just because we got a result; the user
+    // (or VAD) decides when the take is over.
   }
-  recognition.onerror = () => {
-    settle(transcript)
+  recognition.onerror = (event) => {
+    const err = event?.error || ''
+    // no-speech / aborted / audio-capture must not end the recording take.
+    if (err === 'no-speech' || err === 'aborted' || err === 'canceled' || err === 'audio-capture') {
+      return
+    }
   }
   recognition.onend = () => {
-    settle(transcript)
+    if (stopped) {
+      settle()
+      return
+    }
+    if (opts?.shouldContinue?.()) {
+      // iOS often fires onend quickly; keep listening until the recorder stops.
+      restartTimer = window.setTimeout(startSafe, 120)
+      return
+    }
+    settle()
   }
 
-  try {
-    recognition.start()
-  } catch {
-    settle(null)
-  }
+  startSafe()
 
   return {
     supported: true,
     stop: () => {
+      if (stopped) return
+      stopped = true
+      window.clearTimeout(restartTimer)
+      try { recognition.abort?.() } catch { /* ignore */ }
       try { recognition.stop() } catch { /* already ended */ }
+      resolveFn(transcript)
     },
     result,
   }
