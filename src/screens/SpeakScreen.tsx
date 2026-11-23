@@ -42,33 +42,31 @@ interface SpeakScreenProps {
 
 type Phase = 'idle' | 'playing' | 'your-turn' | 'recording' | 'scoring' | 'result' | 'nospeech' | 'interrupted' | 'done';
 
+function lineByItemId(id: string, speechLines: SpeechLine[]): SpeechLine | undefined {
+  const match = /^line-(\d+)$/.exec(id);
+  if (!match) return undefined;
+  return speechLines.find((line) => line.number === Number(match[1]));
+}
+
 function toCoachInputs(focusItems: FocusItem[], speechLines: SpeechLine[]): CoachItem[] {
-  const fromFocus = focusItems.map((item) => {
-    const line = item.id.startsWith('line-')
-      ? speechLines.find((l) => `line-${l.number}` === item.id)
-      : undefined;
+  const overlay = (id: string, kind: CoachItem['kind'], fallback: { chinese: string; pinyin?: string; english?: string; audioUrl?: string }): CoachItem => {
+    const line = lineByItemId(id, speechLines);
     return {
-      id: item.id,
-      kind: item.kind,
-      chinese: item.chinese,
-      pinyin: item.pinyin || line?.pinyin || '',
-      english: item.english || line?.english,
-      audioUrl: item.audioUrl || line?.audioUrl,
+      id,
+      kind,
+      chinese: line?.chinese ?? fallback.chinese,
+      pinyin: line?.pinyin || fallback.pinyin || '',
+      english: line?.english ?? fallback.english,
+      audioUrl: line ? line.audioUrl : fallback.audioUrl,
       speed: 'normal' as const,
       playbackRate: 1,
     };
-  });
+  };
+  const fromFocus = focusItems
+    .filter((item) => !item.id.startsWith('line-') || lineByItemId(item.id, speechLines))
+    .map((item) => overlay(item.id, item.kind, item));
   if (fromFocus.length > 0) return fromFocus;
-  return speechLines.map((line) => ({
-    id: `line-${line.number}`,
-    kind: 'line' as const,
-    chinese: line.chinese,
-    pinyin: line.pinyin,
-    english: line.english,
-    audioUrl: line.audioUrl,
-    speed: 'normal' as const,
-    playbackRate: 1,
-  }));
+  return speechLines.map((line) => overlay(`line-${line.number}`, 'line', line));
 }
 
 function demoScore(): UtteranceScore {
@@ -544,6 +542,9 @@ export default function SpeakScreen({
         <div className="coach-chinese">{current.chinese}</div>
         <div className="coach-pinyin">{current.pinyin}</div>
         {current.english && <div className="coach-english">{current.english}</div>}
+        {!current.audioUrl && (
+          <p className="audio-needed">New audio needed — I will use a device voice for this line.</p>
+        )}
       </div>
 
       {showYourTurn && (

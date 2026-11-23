@@ -67,7 +67,7 @@ body {
   left: 0;
   right: 0;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   background: white;
   border-top: 1px solid var(--light-grey);
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
@@ -78,8 +78,8 @@ body {
 .app-nav button {
   background: none;
   border: none;
-  padding: 0.7rem 0.3rem 0.55rem;
-  font-size: 0.78rem;
+  padding: 0.55rem 0.12rem 0.45rem;
+  font-size: 0.68rem;
   color: var(--grey);
   cursor: pointer;
   transition: all 0.2s;
@@ -1370,7 +1370,7 @@ body {
 
 @media (min-width: 768px) {
   .app-nav {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
   
   .app-nav button {
@@ -1777,4 +1777,120 @@ body {
   background: #31251d;
   color: #f6efe4;
   border-color: #4a3b30;
+}
+
+.my-speech-screen h2 { font-family: 'Noto Serif SC', serif; margin: 0 0 0.4rem; }
+.myspeech-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0.8rem 0 0.6rem;
+}
+.myspeech-dirty { color: var(--deep-red); font-size: 0.9rem; }
+.myspeech-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  margin: 0.6rem 0 1rem;
+}
+.myspeech-history select {
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--light-grey);
+  padding: 0.4rem 0.6rem;
+  background: white;
+  font-size: 0.95rem;
+}
+.myspeech-list { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; margin: 0 0 1rem; padding: 0; }
+.myspeech-card {
+  background: white;
+  border-radius: 16px;
+  padding: 0.95rem 0.9rem 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+.myspeech-card-head, .myspeech-card-actions { display: flex; align-items: center; gap: 0.35rem; }
+.myspeech-card-head { justify-content: space-between; margin-bottom: 0.45rem; }
+.myspeech-num { font-size: 0.75rem; font-weight: 700; color: var(--deep-red); letter-spacing: 0.04em; text-transform: uppercase; }
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--light-grey);
+  background: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.icon-btn:disabled { opacity: 0.35; }
+.myspeech-label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.82rem; color: var(--grey); margin: 0.4rem 0; }
+.myspeech-input {
+  width: 100%;
+  border: 1px solid var(--light-grey);
+  border-radius: 10px;
+  padding: 0.65rem 0.7rem;
+  font-size: 1.05rem;
+  font-family: 'Noto Serif SC', serif;
+  line-height: 1.45;
+}
+.myspeech-row-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+}
+.myspeech-row-btns .coach-primary,
+.myspeech-row-btns .coach-secondary { width: auto; min-height: 44px; padding: 0.5rem 0.75rem; }
+.audio-needed {
+  margin: 0.45rem 0 0;
+  font-size: 0.8rem;
+  color: #8a5a12;
+  background: #fff6e5;
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+}
+.simple-options {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.simple-options li {
+  background: var(--ivory);
+  border-radius: 12px;
+  padding: 0.75rem 0.8rem;
+  border-left: 3px solid var(--deep-red);
+}
+.simple-options .coach-primary { margin-top: 0.55rem; }
+.hard-word {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--deep-red);
+  text-underline-offset: 3px;
+}
+.hard-tip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+  min-width: 10rem;
+  max-width: 16rem;
+  background: #1b1410;
+  color: #f6efe4;
+  font-size: 0.78rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  line-height: 1.35;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  text-align: left;
+  text-decoration: none;
 }

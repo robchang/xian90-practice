@@ -1,18 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { SpeechLine, DailyLesson, VocabWord, UserProgress, SpeakAttempt } from './types'
-import { getProgress, getSpeakAttempts } from './storage'
+import type { SpeechDocument, SpeechSnapshot } from './speechRevision'
+import { editedLineNumbers, resolvePracticeLine, syncSpeechAudio } from './speechRevision'
+import { warmSpeechVoices } from './speakAudio'
+import { getProgress, getSpeakAttempts, getSpeechDocument, saveSpeechDocument, clearLineScores, clearSpeechDocument } from './storage'
 import TodayScreen from './screens/TodayScreen'
 import SpeechScreen from './screens/SpeechScreen'
 import SpeakScreen from './screens/SpeakScreen'
 import QuizScreen from './screens/QuizScreen'
 import ArchiveScreen from './screens/ArchiveScreen'
 import ProgressScreen from './screens/ProgressScreen'
+import MySpeechScreen from './screens/MySpeechScreen'
 import { assetUrl } from './assetUrl'
 import { buildTodayFocus, computeWeaknesses, type FocusItem } from './focusSession'
 import './App.css'
 import BuildFooter, { SwUpdateBanner } from './components/BuildFooter'
 
-type Screen = 'today' | 'speak' | 'speech' | 'quiz' | 'archive' | 'progress'
+type Screen = 'today' | 'speak' | 'speech' | 'myspeech' | 'quiz' | 'archive' | 'progress'
 type SpeakDemo = 'prompt' | 'result' | 'drill'
 
 function readDemo(): string | null {
@@ -20,12 +24,16 @@ function readDemo(): string | null {
   return new URLSearchParams(window.location.search).get('demo')
 }
 
-function lessonLines(lesson: DailyLesson | undefined, speechLines: SpeechLine[]): SpeechLine[] {
+function lessonLines(
+  lesson: DailyLesson | undefined,
+  speechLines: SpeechLine[],
+  canonicalLines: SpeechLine[] = []
+): SpeechLine[] {
   if (!lesson) return []
   return lesson.practiceLines
     .map((line) => {
       const chinese = typeof line === 'string' ? line : line.chinese
-      const match = speechLines.find((s) => s.chinese.replace(/[，。！？、：；“”"]/g, '') === chinese.replace(/[，。！？、：；“”"]/g, '') || s.chinese.includes(chinese) || chinese.includes(s.chinese))
+      const match = resolvePracticeLine(chinese, speechLines, canonicalLines)
       if (match) return match
       if (typeof line === 'string') return undefined
       return {
@@ -105,8 +113,10 @@ function App() {
   const speakDemo: SpeakDemo | null =
     demo === 'prompt' || demo === 'result' || demo === 'drill' ? demo : null
   const [currentScreen, setCurrentScreen] = useState<Screen>(
-    speakDemo ? 'speak' : 'today'
+    speakDemo ? 'speak' : demo === 'myspeech' || demo === 'myspeech-simple' ? 'myspeech' : 'today'
   )
+  const [canonicalLines, setCanonicalLines] = useState<SpeechLine[]>([])
+  const [speechDoc, setSpeechDoc] = useState<SpeechDocument | null>(null)
   const [speechLines, setSpeechLines] = useState<SpeechLine[]>([])
   const [lessons, setLessons] = useState<DailyLesson[]>([])
   const [glossary, setGlossary] = useState<VocabWord[]>([])
@@ -128,10 +138,15 @@ function App() {
         getProgress(),
         getSpeakAttempts(),
       ])
-      const speechData = await speechRes.json()
+      const speechData = (await speechRes.json()) as SpeechLine[]
+      const storedSpeech = await getSpeechDocument()
+      setCanonicalLines(speechData)
+      setSpeechDoc(storedSpeech)
+      const effective = storedSpeech ? syncSpeechAudio(storedSpeech.current, speechData) : speechData
       const glossaryData = await glossaryRes.json()
       const lessonsIndex = await lessonsIndexRes.json()
-      setSpeechLines(speechData)
+      setSpeechLines(effective)
+      warmSpeechVoices()
       setGlossary(glossaryData)
       setProgress(progressData)
       setAttempts(demo === 'today-focus' ? demoAttempts(speechData) : storedAttempts)
@@ -158,8 +173,8 @@ function App() {
   }, [lessons, progress])
 
   const todayLessonLines = useMemo(
-    () => lessonLines(currentLesson, speechLines),
-    [currentLesson, speechLines]
+    () => lessonLines(currentLesson, speechLines, canonicalLines),
+    [currentLesson, speechLines, canonicalLines]
   )
 
   const effectiveAttempts = attempts
@@ -193,6 +208,32 @@ function App() {
     setCurrentScreen('speak')
   }
 
+  const handleSaveSpeech = async (lines: SpeechLine[]) => {
+    const synced = syncSpeechAudio(lines, canonicalLines)
+    const changed = editedLineNumbers(synced, speechLines)
+    if (changed.length) await clearLineScores(changed)
+    const previous = speechDoc || { version: 1 as const, current: canonicalLines, history: [] }
+    const doc = await saveSpeechDocument(synced, previous)
+    setSpeechDoc(doc)
+    setSpeechLines(doc.current)
+  }
+
+  const handleRestoreSpeech = async (snapshot: SpeechSnapshot) => {
+    const synced = syncSpeechAudio(snapshot.lines, canonicalLines)
+    const changed = editedLineNumbers(synced, speechLines)
+    if (changed.length) await clearLineScores(changed)
+    const previous = speechDoc || { version: 1 as const, current: canonicalLines, history: [] }
+    const doc = await saveSpeechDocument(synced, previous)
+    setSpeechDoc(doc)
+    setSpeechLines(doc.current)
+  }
+
+  const handleRevertAllSpeech = async () => {
+    await clearSpeechDocument()
+    setSpeechDoc(null)
+    setSpeechLines(canonicalLines)
+  }
+
   return (
     <div className="app">
       <SwUpdateBanner />
@@ -217,6 +258,7 @@ function App() {
         )}
         {currentScreen === 'speak' && (
           <SpeakScreen
+            key={speechLines.map((l) => l.chinese).join('|')}
             speechLines={speechLines}
             focusItems={focusItems}
             onRefresh={refreshProgress}
@@ -224,7 +266,20 @@ function App() {
             demo={speakDemo}
           />
         )}
-        {currentScreen === 'speech' && <SpeechScreen speechLines={speechLines} />}
+        {currentScreen === 'speech' && (
+          <SpeechScreen key={speechLines.map((l) => l.chinese).join('|')} speechLines={speechLines} originals={canonicalLines} />
+        )}
+        {currentScreen === 'myspeech' && (
+          <MySpeechScreen
+            originals={canonicalLines}
+            lines={speechLines}
+            history={speechDoc?.history || []}
+            onSave={handleSaveSpeech}
+            onRestore={handleRestoreSpeech}
+            onRevertAll={handleRevertAllSpeech}
+            demo={demo === 'myspeech-simple' ? 'simple' : demo === 'myspeech' ? 'editor' : null}
+          />
+        )}
         {currentScreen === 'quiz' && (
           <QuizScreen
             lessons={lessons}
@@ -264,6 +319,10 @@ function App() {
         <button className={currentScreen === 'speech' ? 'active' : ''} onClick={() => setCurrentScreen('speech')}>
           <span className="nav-icon" aria-hidden="true">📜</span>
           Speech
+        </button>
+        <button className={currentScreen === 'myspeech' ? 'active' : ''} onClick={() => setCurrentScreen('myspeech')} data-testid="nav-myspeech">
+          <span className="nav-icon" aria-hidden="true">📝</span>
+          Draft
         </button>
         <button className={currentScreen === 'quiz' ? 'active' : ''} onClick={() => setCurrentScreen('quiz')}>
           <span className="nav-icon" aria-hidden="true">✏️</span>

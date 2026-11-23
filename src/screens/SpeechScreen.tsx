@@ -1,14 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import type { SpeechLine } from '../types';
 import { assetUrl } from '../assetUrl';
+import { playReference } from '../speakAudio';
+import { lineNeedsNewAudio } from '../speechRevision';
 
 interface SpeechScreenProps {
   speechLines: SpeechLine[];
+  originals?: SpeechLine[];
 }
 
 type ViewMode = 'normal' | 'podium';
 
-export default function SpeechScreen({ speechLines }: SpeechScreenProps) {
+export default function SpeechScreen({ speechLines, originals = [] }: SpeechScreenProps) {
   const [showPinyin, setShowPinyin] = useState(true);
   const [showEnglish, setShowEnglish] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('normal');
@@ -19,21 +22,11 @@ export default function SpeechScreen({ speechLines }: SpeechScreenProps) {
 
   const playLine = (index: number) => {
     const line = speechLines[index];
-    if (line.audioUrl && audioRef.current) {
-      audioRef.current.src = assetUrl(line.audioUrl);
-      audioRef.current.play();
-    } else {
-      speakLine(line.chinese);
-    }
-  };
-
-  const speakLine = (text: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'zh-CN';
-      utterance.rate = 0.8;
-      window.speechSynthesis.speak(utterance);
-    }
+    const needs = originals.length ? lineNeedsNewAudio(line, originals) : !line.audioUrl;
+    void playReference({
+      audioUrl: needs ? undefined : line.audioUrl,
+      text: line.chinese,
+    });
   };
 
   const handleShadowingNext = () => {
@@ -146,6 +139,9 @@ export default function SpeechScreen({ speechLines }: SpeechScreenProps) {
               <div className="line-chinese">{line.chinese}</div>
               {showPinyin && <div className="line-pinyin">{line.pinyin}</div>}
               {showEnglish && <div className="line-english">{line.english}</div>}
+              {originals.length > 0 && lineNeedsNewAudio(line, originals) && (
+                <p className="audio-needed">New audio needed — playing a device voice for this line.</p>
+              )}
               <button
                 className="play-button"
                 onClick={() => playLine(idx)}

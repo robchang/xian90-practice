@@ -11,7 +11,7 @@ function gitCommit(): string {
   }
 }
 
-process.env.VITE_APP_VERSION = process.env.VITE_APP_VERSION || 'speak-r3'
+process.env.VITE_APP_VERSION = process.env.VITE_APP_VERSION || 'speak-r4'
 process.env.VITE_APP_COMMIT = (process.env.VITE_APP_COMMIT || gitCommit()).slice(0, 7)
 
 // https://vite.dev/config/

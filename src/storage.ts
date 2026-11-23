@@ -1,5 +1,7 @@
 import localforage from 'localforage';
-import type { UserProgress, LineScore, QuizAttempt, VocabProgress, SpeakAttempt } from './types';
+import type { UserProgress, LineScore, QuizAttempt, VocabProgress, SpeakAttempt, SpeechLine } from './types';
+import type { SpeechDocument, SpeechSnapshot } from './speechRevision';
+import { pushHistory, syncSpeechAudio } from './speechRevision';
 
 const PROGRESS_KEY = 'user_progress';
 
@@ -118,4 +120,46 @@ export async function addSpeakAttempt(attempt: SpeakAttempt): Promise<void> {
 
 export async function clearSpeakAttempts(): Promise<void> {
   await localforage.removeItem(ATTEMPTS_KEY);
+}
+
+
+const SPEECH_DOC_KEY = 'revised_speech_v1';
+
+export async function getSpeechDocument(): Promise<SpeechDocument | null> {
+  try {
+    return (await localforage.getItem<SpeechDocument>(SPEECH_DOC_KEY)) || null;
+  } catch (error) {
+    console.error('Error loading revised speech:', error);
+    return null;
+  }
+}
+
+export async function saveSpeechDocument(current: SpeechLine[], previous?: SpeechDocument | null): Promise<SpeechDocument> {
+  const history = pushHistory(previous?.history || [], previous?.current || current);
+  const doc: SpeechDocument = { version: 1, current, history };
+  // If this is the very first save, history already has the previous current;
+  // when previous is null, we still want a snapshot of what we are saving.
+  if (!previous) {
+    doc.history = pushHistory([], current);
+  }
+  await localforage.setItem(SPEECH_DOC_KEY, doc);
+  return doc;
+}
+
+export async function restoreSpeechSnapshot(originals: SpeechLine[], snapshot: SpeechSnapshot, previous?: SpeechDocument | null): Promise<SpeechDocument> {
+  const current = syncSpeechAudio(snapshot.lines, originals);
+  return saveSpeechDocument(current, previous);
+}
+
+export async function clearSpeechDocument(): Promise<void> {
+  await localforage.removeItem(SPEECH_DOC_KEY);
+}
+
+export async function clearLineScores(lineNumbers: number[]): Promise<void> {
+  if (!lineNumbers.length) return;
+  const progress = await getProgress();
+  for (const n of lineNumbers) {
+    delete progress.lineScores[n];
+  }
+  await saveProgress(progress);
 }

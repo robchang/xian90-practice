@@ -183,6 +183,31 @@ async function playHtmlAudio(url: string, rate: number, signal?: AbortSignal): P
   return Math.max(0, performance.now() - startedAt)
 }
 
+export function pickZhCnVoice(): SpeechSynthesisVoice | null {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null
+  const voices = window.speechSynthesis.getVoices() || []
+  const zh = voices.filter((v) => {
+    const key = `${v.lang} ${v.name}`
+    return /zh[-_]?CN|zh[-_]?Hans|Chinese.*China|普通话|汉语/i.test(key) || /^zh/i.test(v.lang)
+  })
+  const prefer = (re: RegExp) => zh.find((v) => re.test(v.name))
+  return (
+    prefer(/Ting-Ting|Tingting|Mei-Jia|Meijia|Xiaoxiao|Xiaoyi|Lili|Huihui|Yaoyao/i) ||
+    prefer(/female|女/i) ||
+    zh.find((v) => /zh[-_]?CN/i.test(v.lang)) ||
+    zh[0] ||
+    null
+  )
+}
+
+export function warmSpeechVoices(): void {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+  window.speechSynthesis.getVoices()
+  window.speechSynthesis.addEventListener?.('voiceschanged', () => {
+    window.speechSynthesis.getVoices()
+  }, { once: true })
+}
+
 function speakChinese(text: string, rate: number, signal?: AbortSignal): Promise<number> {
   return new Promise((resolve, reject) => {
     const startedAt = performance.now()
@@ -195,6 +220,8 @@ function speakChinese(text: string, rate: number, signal?: AbortSignal): Promise
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'zh-CN'
     utterance.rate = Math.max(0.5, Math.min(1.2, rate))
+    const voice = pickZhCnVoice()
+    if (voice) utterance.voice = voice
     let settled = false
     let watchdog = 0
     const finish = () => {
