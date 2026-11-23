@@ -7,11 +7,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:whisper": "vite-node scripts/test-whisper-score.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.3.2",
     "date-fns": "^4.4.0",
     "localforage": "^1.10.0",
     "pinyin-pro": "^3.29.5",
@@ -31,6 +35,12 @@
     "oxlint": "^1.90.0",
     "puppeteer": "^25.18.1",
     "typescript": "~7.0.2",
-    "vite": "^8.3.6"
+    "vite": "^8.3.6",
+    "vite-node": "^6.0.0",
+    "vitest": "^5.1.1"
+  },
+  "allowScripts": {
+    "onnxruntime-node@1.30.0": true,
+    "protobufjs@7.6.6": true
   }
 }

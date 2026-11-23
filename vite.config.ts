@@ -37,6 +37,9 @@ export default defineConfig({
     })
   ],
   base: process.env.BASE_PATH || './',
+  optimizeDeps: {
+    exclude: ['@huggingface/transformers']
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

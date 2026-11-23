@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import type { UserProgress, LineScore, QuizAttempt, VocabProgress } from './types';
+import type { UserProgress, LineScore, QuizAttempt, VocabProgress, SpeakAttempt } from './types';
 
 const PROGRESS_KEY = 'user_progress';
 
@@ -92,4 +92,30 @@ export async function importProgress(jsonString: string): Promise<boolean> {
     console.error('Error importing progress:', error);
     return false;
   }
+}
+
+
+const ATTEMPTS_KEY = 'speak_attempts';
+const MAX_STORED_ATTEMPTS = 800;
+
+export async function getSpeakAttempts(): Promise<SpeakAttempt[]> {
+  try {
+    const stored = await localforage.getItem<SpeakAttempt[]>(ATTEMPTS_KEY);
+    return stored || [];
+  } catch (error) {
+    console.error('Error loading speak attempts:', error);
+    return [];
+  }
+}
+
+export async function addSpeakAttempt(attempt: SpeakAttempt): Promise<void> {
+  const attempts = await getSpeakAttempts();
+  attempts.push(attempt);
+  attempts.sort((a, b) => a.timestamp - b.timestamp);
+  const trimmed = attempts.slice(-MAX_STORED_ATTEMPTS);
+  await localforage.setItem(ATTEMPTS_KEY, trimmed);
+}
+
+export async function clearSpeakAttempts(): Promise<void> {
+  await localforage.removeItem(ATTEMPTS_KEY);
 }

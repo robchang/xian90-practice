@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { DailyLesson, UserProgress } from '../types';
+import type { FocusItem, WeakItem } from '../focusSession';
 import { updateStreak, markDayComplete } from '../storage';
 
 interface TodayScreenProps {
@@ -7,9 +8,13 @@ interface TodayScreenProps {
   progress: UserProgress;
   targetDate: Date;
   onRefresh: () => void;
+  focusItems: FocusItem[];
+  troubleWords: WeakItem[];
+  onStartFocus: () => void;
+  onOpenArchive: () => void;
 }
 
-export default function TodayScreen({ lessons, progress, targetDate, onRefresh }: TodayScreenProps) {
+export default function TodayScreen({ lessons, progress, targetDate, onRefresh, focusItems, troubleWords, onStartFocus, onOpenArchive }: TodayScreenProps) {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [showAnswer, setShowAnswer] = useState<number | null>(null);
 
@@ -58,6 +63,38 @@ export default function TodayScreen({ lessons, progress, targetDate, onRefresh }
         <div className="event-info">
           90th Anniversary of the Xi'an Incident
         </div>
+      </section>
+
+      <section className="focus-section" data-testid="today-focus">
+        <h2>Today's focus</h2>
+        <p className="focus-lead">A short speaking set built from words that need work, plus today's lesson lines. Mastered lines show up less often.</p>
+        <button className="coach-primary" onClick={onStartFocus} data-testid="start-focus">
+          Start today's focus
+        </button>
+        <ol className="focus-list">
+          {focusItems.map((item) => (
+            <li key={item.id} className={`focus-item reason-${item.reason}`}>
+              <span className="focus-chinese">{item.chinese}</span>
+              <span className="focus-reason">
+                {item.reason === 'weak' ? 'Needs work' : item.reason === 'today-lesson' ? "Today's lesson" : 'Light review'}
+              </span>
+            </li>
+          ))}
+        </ol>
+        {troubleWords.length > 0 && (
+          <div className="trouble-row">
+            <h3>Top trouble words</h3>
+            <ul>
+              {troubleWords.slice(0, 5).map((w) => (
+                <li key={w.id}>
+                  <strong>{w.chinese}</strong>
+                  <span> recent avg {Math.round(w.recentAvg)}%</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <button className="text-link" onClick={onOpenArchive}>Prior lessons (archive)</button>
       </section>
 
       <section className="lesson-section">

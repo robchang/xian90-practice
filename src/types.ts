@@ -65,6 +65,8 @@ export interface SyllableScore {
   finalMatch: boolean;
   toneMatch: boolean;
   score: number;
+  color?: 'green' | 'yellow' | 'red';
+  toneAccepted?: boolean;
 }
 
 export interface QuizAttempt {
@@ -80,6 +82,19 @@ export interface VocabProgress {
   repetitions: number;
   dueDate: number;
   lastReviewed: number;
+}
+
+
+export interface SpeakAttempt {
+  id: string;
+  itemId: string;
+  kind: 'line' | 'chunk' | 'word';
+  chinese: string;
+  score: number;
+  syllableScores: SyllableScore[];
+  speed: 'normal' | 'slow' | 'slower';
+  timestamp: number;
+  source: 'speech-recognition' | 'whisper' | 'manual';
 }
 
 export interface UserProgress {

@@ -1,17 +1,23 @@
 import { useState } from 'react';
-import type { UserProgress, SpeechLine } from '../types';
+import type { UserProgress, SpeechLine, SpeakAttempt } from '../types';
 import { exportProgress, importProgress } from '../storage';
+import { buildCoachSummary, serializeCoachSummary } from '../progressSummary';
+import { computeWeaknesses } from '../focusSession';
 
 interface ProgressScreenProps {
   progress: UserProgress;
   speechLines: SpeechLine[];
+  attempts: SpeakAttempt[];
+  todayLessonLines: SpeechLine[];
   onRefresh: () => void;
+  onOpenArchive: () => void;
 }
 
-export default function ProgressScreen({ progress, speechLines, onRefresh }: ProgressScreenProps) {
+export default function ProgressScreen({ progress, speechLines, attempts, todayLessonLines, onRefresh, onOpenArchive }: ProgressScreenProps) {
   const [showExport, setShowExport] = useState(false);
   const [exportData, setExportData] = useState('');
   const [importData, setImportData] = useState('');
+  const [shareNote, setShareNote] = useState('');
 
   const handleExport = async () => {
     const data = await exportProgress();
@@ -49,7 +55,32 @@ export default function ProgressScreen({ progress, speechLines, onRefresh }: Pro
     URL.revokeObjectURL(url);
   };
 
-  const totalAttempts = Object.values(progress.lineScores).reduce((sum, scores) => sum + scores.length, 0);
+  const handleShareCoach = async () => {
+    const summary = buildCoachSummary({ attempts, speechLines, todayLessonLines });
+    const text = serializeCoachSummary(summary);
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Xi'an 90 practice summary", text });
+        setShareNote('Shared. Paste it into chat with your coach when you are ready.');
+        return;
+      }
+    } catch (err) {
+      if ((err as { name?: string })?.name === 'AbortError') return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      setShareNote('Copied to the clipboard. Paste it into chat with your coach.');
+    } catch {
+      setExportData(text);
+      setShowExport(true);
+      setShareNote('Copy the JSON below and paste it into chat with your coach.');
+    }
+  };
+
+  const trouble = computeWeaknesses(attempts).filter((w) => w.kind === 'word' || !w.id.startsWith('line-')).slice(0, 5);
+  const summary = buildCoachSummary({ attempts, speechLines, todayLessonLines });
+
+  const totalAttempts = attempts.length || Object.values(progress.lineScores).reduce((sum, scores) => sum + scores.length, 0);
   const quizAccuracy = progress.quizAttempts.length > 0
     ? Math.round((progress.quizAttempts.filter(a => a.correct).length / progress.quizAttempts.length) * 100)
     : 0;
@@ -81,6 +112,53 @@ export default function ProgressScreen({ progress, speechLines, onRefresh }: Pro
           <div className="stat-icon">✓</div>
           <div className="stat-value">{quizAccuracy}%</div>
           <div className="stat-label">Quiz Accuracy</div>
+        </div>
+      </div>
+
+      <div className="coach-share-card">
+        <h3>Send progress to my coach</h3>
+        <p>A compact summary of weak words, line scores, and recent practice counts. There is no server — this copies the JSON so you can paste it into chat.</p>
+        <button className="coach-primary" onClick={handleShareCoach} data-testid="share-coach">
+          Send progress to my coach
+        </button>
+        {shareNote && <p className="share-note">{shareNote}</p>}
+        <button className="text-link" onClick={onOpenArchive}>Prior lessons (archive)</button>
+      </div>
+
+      {trouble.length > 0 && (
+        <div className="trouble-section">
+          <h3>Top 5 trouble words</h3>
+          <ul className="trouble-list">
+            {trouble.map((w) => (
+              <li key={w.id}>
+                <strong>{w.chinese}</strong>
+                <span> {Math.round(w.recentAvg)}% recent · {w.attempts} tries</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="line-trend-section">
+        <h3>Per-line trend</h3>
+        <div className="line-trends">
+          {summary.lineScores.map((line) => (
+            <div key={line.line} className={`line-trend status-${line.status}`}>
+              <div className="line-trend-head">
+                <span>Line {line.line}</span>
+                <span>{line.status}</span>
+              </div>
+              <p className="line-preview">{line.chinese.slice(0, 16)}{line.chinese.length > 16 ? '…' : ''}</p>
+              <div className="trend-bars" aria-hidden="true">
+                {(line.trend.length ? line.trend : [0]).map((s, i) => (
+                  <span key={i} className="trend-bar" style={{ height: `${Math.max(8, s)}%` }} title={`${s}`} />
+                ))}
+              </div>
+              <div className="line-trend-meta">
+                {line.latest !== null ? `Latest ${line.latest}% · best ${line.best}%` : 'Not practiced yet'}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
