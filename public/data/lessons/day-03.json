@@ -1,0 +1,87 @@
+{
+  "day": 3,
+  "date": "2026-11-23",
+  "story": {
+    "title": "The Taiwan years",
+    "content": "In November 1946, Zhang Xueliang and Zhao Yidi were flown to Taiwan and held at Qingquan (清泉), a hot-spring area in the mountains of Wufeng, Hsinchu. He was moved several times over the following years, and from August 1961 he lived in a house in Beitou, Taipei, built on land he bought; it became his longest home in Taiwan. Restrictions eased after 1988, and on 1 June 1990 friends hosted a public 90th-birthday celebration for him at Taipei's Grand Hotel (圆山饭店), widely seen as marking his freedom. These are the Taiwan years behind speech line 7.",
+    "keySentence": {
+      "chinese": "一九四六年，张学良和赵一荻到了台湾。",
+      "pinyin": "Yī jiǔ sì liù nián, Zhāng Xuéliáng hé Zhào Yīdí dào le Táiwān.",
+      "english": "In 1946, Zhang Xueliang and Zhao Yidi arrived in Taiwan."
+    }
+  },
+  "vocabulary": [
+    {
+      "chinese": "看望",
+      "pinyin": "kànwàng",
+      "english": "to visit (someone you care about)",
+      "example": "我去看望祖父。Wǒ qù kànwàng zǔfù."
+    },
+    {
+      "chinese": "故事",
+      "pinyin": "gùshi",
+      "english": "story",
+      "example": "他讲了一个故事。Tā jiǎng le yí ge gùshi."
+    },
+    {
+      "chinese": "感受",
+      "pinyin": "gǎnshòu",
+      "english": "to feel, sense",
+      "example": "我感受到了他的爱。Wǒ gǎnshòu dào le tā de ài."
+    },
+    {
+      "chinese": "深爱",
+      "pinyin": "shēn'ài",
+      "english": "to love deeply",
+      "example": "他深爱他的家人。Tā shēn'ài tā de jiārén."
+    },
+    {
+      "chinese": "人民",
+      "pinyin": "rénmín",
+      "english": "the people",
+      "example": "中国人民很热情。Zhōngguó rénmín hěn rèqíng."
+    }
+  ],
+  "practiceLines": [
+    {
+      "chinese": "我从一岁起，每年都去台湾看望祖父。",
+      "pinyin": "Wǒ cóng yí suì qǐ, měinián dōu qù Táiwān kànwàng zǔfù.",
+      "english": "From the age of one, I visited my grandfather in Taiwan every year.",
+      "audioUrl": "/audio/daily/day-03/lines/line_02.mp3"
+    },
+    {
+      "chinese": "他给我讲了很多故事。",
+      "pinyin": "Tā gěi wǒ jiǎng le hěn duō gùshi.",
+      "english": "He told me many stories.",
+      "audioUrl": "/audio/daily/day-03/lines/line_03.mp3"
+    },
+    {
+      "chinese": "从这些故事里，我感受到他深爱中国，深爱中国人民。",
+      "pinyin": "Cóng zhèxiē gùshi lǐ, wǒ gǎnshòu dào tā shēn ài Zhōngguó, shēn ài Zhōngguó rénmín.",
+      "english": "Through those stories, I felt how deeply he loved China and the Chinese people.",
+      "audioUrl": "/audio/daily/day-03/lines/line_04.mp3"
+    }
+  ],
+  "pronunciationTip": "一岁 is yí suì [dict. yī suì], because 岁 is a 4th tone; same with 一个 yí ge (个 is 4th tone in the dictionary). Line 8 has three 3rd tones in a row, 给我讲 gěi wǒ jiǎng: say it \"géi wó jiǎng\", only the last one dips. 很多 hěn duō: just a low 很, no rise. Line 9: pause once at the first comma, and keep the two 深爱 phrases even, like a rhythm: 深爱中国 / 深爱中国人民.\n**Daily run-through:** read all 14 lines of the main speech aloud once (about 90 sec), then listen to full_speech_normal.mp3 once.",
+  "quiz": [
+    {
+      "id": "q3-1",
+      "type": "character-to-meaning",
+      "question": "What does 自由 (zìyóu) mean?",
+      "correct": "freedom",
+      "options": [
+        "freedom"
+      ]
+    }
+  ],
+  "audioFiles": {
+    "story": "/audio/daily/day-03/lines/line_01.mp3",
+    "vocab": [
+      "/audio/daily/day-03/words.mp3"
+    ],
+    "shadowing": "/audio/daily/day-03/shadowing.mp3",
+    "words": "/audio/daily/day-03/words.mp3",
+    "fullNormal": "/audio/daily/day-03/full_normal.mp3",
+    "fullSlow": "/audio/daily/day-03/full_slow.mp3"
+  }
+}
