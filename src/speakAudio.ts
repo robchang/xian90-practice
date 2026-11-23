@@ -1,4 +1,5 @@
 import { assetUrl } from './assetUrl'
+import { diag, type TakeEndReason } from './diagnostics'
 import {
   createVadController,
   maxRecordMsFor,
@@ -255,6 +256,13 @@ export async function resumeAudioContext(ctx: AudioContext): Promise<void> {
 
 /** Open (or reuse) the mic and resume AudioContext. Call from a user tap on iOS. */
 export async function prepareMic(): Promise<MicSession> {
+  const testHook = (typeof window !== 'undefined'
+    && (window as Window & { __TEST_PREPARE_MIC?: () => Promise<MicSession> }).__TEST_PREPARE_MIC)
+  if (typeof testHook === 'function' && !sharedMic) {
+    sharedMic = await testHook()
+    diag('mic', 'prepareMic used test hook')
+    return sharedMic
+  }
   if (sharedMic) {
     const live = sharedMic.stream.getTracks().some((t) => t.readyState === 'live')
     if (live) {
@@ -287,64 +295,227 @@ export function releaseSharedMic(): void {
   sharedMic = null
 }
 
+export const TAP_MAX_RECORD_MS = 20000
+
+export function pickRecorderMimeType(): string {
+  if (typeof MediaRecorder === 'undefined') return ''
+  const candidates = [
+    'audio/mp4',
+    'audio/mp4;codecs=mp4a.40.2',
+    'audio/aac',
+    'audio/webm;codecs=opus',
+    'audio/webm',
+  ]
+  return candidates.find((type) => {
+    try {
+      return MediaRecorder.isTypeSupported(type)
+    } catch {
+      return false
+    }
+  }) || ''
+}
+
+export async function decodeBlobToPcm16k(blob: Blob, ctx: AudioContext): Promise<Float32Array | null> {
+  if (!blob || blob.size < 32) return null
+  try {
+    const copy = await blob.arrayBuffer()
+    const audioBuffer = await ctx.decodeAudioData(copy.slice(0))
+    const mono = audioBufferToMono(audioBuffer)
+    return downsampleTo16k(mono.samples, mono.sampleRate)
+  } catch (err) {
+    diag('audio', 'decodeBlobToPcm16k failed', { error: String(err), type: blob.type, size: blob.size })
+    return null
+  }
+}
+
 export interface RecordedTake {
   blob: Blob
   samples16k: Float32Array
   sampleRate: 16000
   heardSpeech: boolean
+  endReason: TakeEndReason
 }
 
 export interface RecorderHandles {
-  stop: () => Promise<RecordedTake>
+  stop: (reason?: TakeEndReason) => Promise<RecordedTake>
   heardSpeech: () => boolean
+  endReason: () => TakeEndReason | null
 }
 
 /**
- * Record from the mic, collecting PCM for Whisper and a WAV blob for playback.
- * When handsFree is on, auto-stops after trailing silence following speech onset,
- * or at max(8s, 3× reference). The silence timer never starts before onset.
- * Tap-to-talk still auto-stops at the max duration only.
+ * Record from the mic with MediaRecorder (Safari: audio/mp4, no timeslice).
+ * In tap mode the only automatic end is the 20s cap; a Stop tap otherwise ends the take.
+ * Unexpected track ended/mute or a recorder onstop we did not request is an interruption, not a score.
  */
 export async function startPhraseRecording(opts: {
   onLevel?: (rms: number) => void
-  onAutoStop?: () => void
+  onTick?: (elapsedMs: number) => void
+  onAutoStop?: (reason: TakeEndReason) => void
+  onInterrupted?: (reason: TakeEndReason) => void
+  /** Desktop hands-free only. Ignored in tapMode. */
   handsFree?: boolean
+  /** When true (iOS / mobile default), only user-stop or the 20s cap may end the take. */
+  tapMode?: boolean
   referenceDurationMs?: number
   stream?: MediaStream
   audioContext?: AudioContext
 }): Promise<RecorderHandles> {
+  const tapMode = opts.tapMode !== false && (opts.tapMode === true || !opts.handsFree)
   const mic = opts.stream && opts.audioContext
     ? { stream: opts.stream, ctx: opts.audioContext }
     : await prepareMic()
   await resumeAudioContext(mic.ctx)
+  diag('recorder', 'startPhraseRecording', {
+    tapMode,
+    handsFree: Boolean(opts.handsFree),
+    tracks: mic.stream.getAudioTracks().map((t) => ({ ready: t.readyState, muted: t.muted, label: t.label })),
+  })
 
   const source = mic.ctx.createMediaStreamSource(mic.stream)
+  const analyser = mic.ctx.createAnalyser()
+  analyser.fftSize = 2048
+  source.connect(analyser)
+
+  // PCM side channel for Whisper if the MediaRecorder blob cannot be decoded.
   const samples: number[] = []
   const processor = mic.ctx.createScriptProcessor(4096, 1, 1)
+  const mute = mic.ctx.createGain()
+  mute.gain.value = 0
+
+  const mime = pickRecorderMimeType()
+  let recorder: MediaRecorder | null = null
+  const chunks: Blob[] = []
+  try {
+    recorder = mime ? new MediaRecorder(mic.stream, { mimeType: mime }) : new MediaRecorder(mic.stream)
+    diag('recorder', 'MediaRecorder created', { mime: recorder.mimeType || mime || '(default)' })
+  } catch (err) {
+    diag('recorder', 'MediaRecorder unavailable, will use PCM only', { error: String(err) })
+    recorder = null
+  }
+
   const vad: VadController = createVadController({
-    maxRecordMs: maxRecordMsFor(opts.referenceDurationMs),
+    maxRecordMs: tapMode ? TAP_MAX_RECORD_MS : maxRecordMsFor(opts.referenceDurationMs),
   })
   let finished = false
+  let stopRequested = false
   let heardSpeech = false
+  let endReason: TakeEndReason | null = null
+  let maxTimer = 0
+  let tickTimer = 0
+  let raf = 0
+  const startedAt = performance.now()
+
   let resolver: (value: RecordedTake) => void
   const done = new Promise<RecordedTake>((resolve) => {
     resolver = resolve
   })
 
-  const mute = mic.ctx.createGain()
-  mute.gain.value = 0
-
-  const finish = () => {
-    if (finished) return
-    finished = true
+  const cleanupGraph = () => {
     processor.onaudioprocess = null
     try { processor.disconnect() } catch { /* ignore */ }
     try { source.disconnect() } catch { /* ignore */ }
+    try { analyser.disconnect() } catch { /* ignore */ }
     try { mute.disconnect() } catch { /* ignore */ }
-    const raw = new Float32Array(samples)
-    const samples16k = downsampleTo16k(raw, mic.ctx.sampleRate)
-    const blob = encodeWav(samples16k, 16000)
-    resolver({ blob, samples16k, sampleRate: 16000, heardSpeech })
+    window.clearTimeout(maxTimer)
+    window.clearInterval(tickTimer)
+    if (raf) cancelAnimationFrame(raf)
+  }
+
+  const assemble = async (): Promise<RecordedTake> => {
+    let blob: Blob | null = null
+    if (chunks.length) {
+      blob = new Blob(chunks, { type: recorder?.mimeType || mime || 'audio/mp4' })
+    }
+    let samples16k: Float32Array | null = blob ? await decodeBlobToPcm16k(blob, mic.ctx) : null
+    if (!samples16k || samples16k.length === 0) {
+      const raw = new Float32Array(samples)
+      samples16k = downsampleTo16k(raw, mic.ctx.sampleRate)
+      if (!blob || blob.size === 0) blob = encodeWav(samples16k, 16000)
+    }
+    return {
+      blob: blob!,
+      samples16k,
+      sampleRate: 16000,
+      heardSpeech,
+      endReason: endReason || 'unknown',
+    }
+  }
+
+  const finalize = async () => {
+    if (finished) return
+    finished = true
+    cleanupGraph()
+    const take = await assemble()
+    diag('recorder', 'finalize', {
+      endReason: take.endReason,
+      heardSpeech: take.heardSpeech,
+      blobType: take.blob.type,
+      blobSize: take.blob.size,
+      samples: take.samples16k.length,
+    })
+    resolver(take)
+  }
+
+  const requestStop = (reason: TakeEndReason) => {
+    if (finished || stopRequested) return
+    stopRequested = true
+    endReason = reason
+    diag('recorder', 'requestStop', { reason })
+    if (recorder && (recorder.state === 'recording' || recorder.state === 'paused')) {
+      try {
+        recorder.stop()
+      } catch (err) {
+        diag('recorder', 'MediaRecorder.stop threw', { error: String(err) })
+        void finalize()
+      }
+    } else {
+      void finalize()
+    }
+  }
+
+  const interrupt = (reason: TakeEndReason) => {
+    if (finished || stopRequested) return
+    diag('recorder', 'interrupted', { reason })
+    endReason = reason
+    stopRequested = true
+    opts.onInterrupted?.(reason)
+    if (recorder && (recorder.state === 'recording' || recorder.state === 'paused')) {
+      try { recorder.stop() } catch { void finalize() }
+    } else {
+      void finalize()
+    }
+  }
+
+  if (recorder) {
+    recorder.ondataavailable = (event) => {
+      diag('recorder', 'ondataavailable', { size: event.data?.size || 0, type: event.data?.type })
+      if (event.data && event.data.size > 0) chunks.push(event.data)
+    }
+    recorder.onerror = () => {
+      diag('recorder', 'onerror')
+      interrupt('mediarecorder-error')
+    }
+    recorder.onstop = () => {
+      diag('recorder', 'onstop', { stopRequested, endReason })
+      if (!stopRequested) {
+        interrupt('mediarecorder-onstop-unexpected')
+        return
+      }
+      void finalize()
+    }
+    // No timeslice: iOS Safari often produces a broken/empty file if one is set.
+    recorder.start()
+  }
+
+  for (const track of mic.stream.getAudioTracks()) {
+    track.addEventListener('ended', () => {
+      diag('mic', 'track ended', { stopRequested, ready: track.readyState })
+      if (!stopRequested) interrupt('track-ended')
+    })
+    track.addEventListener('mute', () => {
+      diag('mic', 'track mute', { stopRequested })
+      if (!stopRequested) interrupt('track-mute')
+    })
   }
 
   processor.onaudioprocess = (event) => {
@@ -357,20 +528,44 @@ export async function startPhraseRecording(opts: {
     opts.onLevel?.(rms)
     const decision = vad.process(rms, performance.now())
     if (decision.heardSpeech) heardSpeech = true
-    if (decision.shouldStop && (opts.handsFree || decision.reason === 'max')) {
-      opts.onAutoStop?.()
-      finish()
+    // Hands-free (desktop only) may auto-stop on trailing silence. Tap mode never does.
+    if (!tapMode && opts.handsFree && decision.shouldStop && decision.reason === 'trailing-silence') {
+      opts.onAutoStop?.('vad-silence')
+      requestStop('vad-silence')
     }
   }
-
   source.connect(processor)
   processor.connect(mute)
   mute.connect(mic.ctx.destination)
 
+  const timeDomain = new Uint8Array(analyser.fftSize)
+  const tick = () => {
+    if (finished) return
+    analyser.getByteTimeDomainData(timeDomain)
+    let sum = 0
+    for (let i = 0; i < timeDomain.length; i++) {
+      const v = (timeDomain[i] - 128) / 128
+      sum += v * v
+    }
+    opts.onLevel?.(Math.sqrt(sum / timeDomain.length))
+    opts.onTick?.(performance.now() - startedAt)
+    raf = requestAnimationFrame(tick)
+  }
+  raf = requestAnimationFrame(tick)
+
+  const cap = tapMode ? TAP_MAX_RECORD_MS : maxRecordMsFor(opts.referenceDurationMs)
+  maxTimer = window.setTimeout(() => {
+    if (finished || stopRequested) return
+    diag('recorder', 'max-duration cap', { cap })
+    opts.onAutoStop?.('max-duration')
+    requestStop('max-duration')
+  }, cap)
+
   return {
     heardSpeech: () => heardSpeech,
-    stop: async () => {
-      finish()
+    endReason: () => endReason,
+    stop: async (reason: TakeEndReason = 'user-stop') => {
+      requestStop(reason)
       return done
     },
   }

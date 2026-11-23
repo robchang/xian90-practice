@@ -1,6 +1,18 @@
+import { execSync } from 'node:child_process'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+
+function gitCommit(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return 'dev'
+  }
+}
+
+process.env.VITE_APP_VERSION = process.env.VITE_APP_VERSION || 'speak-r3'
+process.env.VITE_APP_COMMIT = (process.env.VITE_APP_COMMIT || gitCommit()).slice(0, 7)
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -31,6 +43,8 @@ export default defineConfig({
         ]
       },
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,mp3,json}'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
       }

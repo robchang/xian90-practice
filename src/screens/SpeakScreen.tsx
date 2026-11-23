@@ -23,8 +23,14 @@ import {
 } from '../speakAudio';
 import { detectPitch } from '../scoring';
 import { startLiveRecognition, transcribeRecording } from '../recognition';
-import { preferTapToTalk } from '../platform';
+import { preferTapToTalk, useLiveSpeechRecognition } from '../platform';
 import { shouldScoreAttempt } from '../vad';
+import {
+  diag,
+  isInterruptedEnd,
+  isScorableEnd,
+  type TakeEndReason,
+} from '../diagnostics';
 
 interface SpeakScreenProps {
   speechLines: SpeechLine[];
@@ -34,7 +40,7 @@ interface SpeakScreenProps {
   demo?: 'prompt' | 'result' | 'drill' | null;
 }
 
-type Phase = 'idle' | 'playing' | 'your-turn' | 'recording' | 'scoring' | 'result' | 'nospeech' | 'done';
+type Phase = 'idle' | 'playing' | 'your-turn' | 'recording' | 'scoring' | 'result' | 'nospeech' | 'interrupted' | 'done';
 
 function toCoachInputs(focusItems: FocusItem[], speechLines: SpeechLine[]): CoachItem[] {
   const fromFocus = focusItems.map((item) => {
@@ -101,6 +107,13 @@ function demoSession(kind: 'prompt' | 'result' | 'drill'): LadderSession {
   return session;
 }
 
+function formatTimer(ms: number): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 export default function SpeakScreen({
   speechLines,
   focusItems,
@@ -129,14 +142,16 @@ export default function SpeakScreen({
       : demo === 'result'
         ? 'Close — check the second half.'
         : demo === 'prompt'
-          ? 'Your turn — speak now.'
+          ? 'Recording... tap to stop'
           : ''
   );
   const [level, setLevel] = useState(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [whisperStatus, setWhisperStatus] = useState('');
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [error, setError] = useState('');
   const [handsFree, setHandsFree] = useState(() => (demo ? false : !preferTapToTalk()));
+  const tapMode = preferTapToTalk() || !handsFree;
 
   const abortRef = useRef<AbortController | null>(null);
   const recorderRef = useRef<RecorderHandles | null>(null);
@@ -152,8 +167,39 @@ export default function SpeakScreen({
   const referenceMsRef = useRef(0);
   const handsFreeRef = useRef(handsFree);
   handsFreeRef.current = handsFree;
+  const phaseRef = useRef(phase);
+  phaseRef.current = phase;
+  const lastEndReasonRef = useRef<TakeEndReason | null>(null);
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
+  const messageRef = useRef(message);
+  messageRef.current = message;
 
   const current = session?.current;
+
+  const setPhaseLogged = (next: Phase, reason: string, extra?: Record<string, unknown>) => {
+    diag('phase', `${phaseRef.current} -> ${next}`, { reason, ...extra });
+    if (next === 'scoring') {
+      try {
+        console.info('[coach] entering scoring because:', reason, extra ?? {});
+      } catch { /* ignore */ }
+    }
+    setPhase(next);
+  };
+
+  useEffect(() => {
+    const hook = {
+      getPhase: () => phaseRef.current,
+      getScore: () => scoreRef.current?.overall ?? null,
+      getMessage: () => messageRef.current,
+      getEndReason: () => lastEndReasonRef.current,
+    };
+    (window as Window & { __COACH_TEST__?: typeof hook }).__COACH_TEST__ = hook;
+    (window as Window & { __coachRecording?: boolean }).__coachRecording = phase === 'recording' || phase === 'playing';
+    return () => {
+      delete (window as Window & { __COACH_TEST__?: typeof hook }).__COACH_TEST__;
+    };
+  }, [phase]);
 
   useEffect(() => {
     return () => {
@@ -212,12 +258,11 @@ export default function SpeakScreen({
     setScore(utterance);
     setSource(src);
     setMessage(next.events[0]?.message || utterance.tip);
-    // Always wait for a tap — never auto-advance or skip the result.
-    setPhase('result');
+    setPhaseLogged('result', 'score-ready', { score: utterance.overall });
     onRefresh();
   };
 
-  const finishRecording = async () => {
+  const finishRecording = async (reason: TakeEndReason) => {
     if (finishingRef.current) return;
     const recorder = recorderRef.current;
     const ladder = sessionRef.current;
@@ -225,12 +270,40 @@ export default function SpeakScreen({
     finishingRef.current = true;
     recordingRef.current = false;
     recorderRef.current = null;
-    setPhase('scoring');
-    setMessage('Scoring…');
+    lastEndReasonRef.current = reason;
+    diag('take', 'finishRecording called', { reason });
+
+    if (isInterruptedEnd(reason)) {
+      liveStopRef.current?.();
+      liveStopRef.current = null;
+      try { await recorder.stop('interrupted'); } catch { /* ignore */ }
+      setError('');
+      setMessage('Microphone was interrupted, tap to try again');
+      setPhaseLogged('interrupted', reason);
+      finishingRef.current = false;
+      return;
+    }
+
+    if (!isScorableEnd(reason)) {
+      liveStopRef.current?.();
+      setMessage('Microphone was interrupted, tap to try again');
+      setPhaseLogged('interrupted', reason || 'unknown');
+      finishingRef.current = false;
+      return;
+    }
+
+    setPhaseLogged('scoring', reason);
+    setMessage('Scoring...');
     liveStopRef.current?.();
     liveStopRef.current = null;
     try {
-      const recorded = await recorder.stop();
+      const recorded = await recorder.stop(reason);
+      lastEndReasonRef.current = recorded.endReason || reason;
+      if (isInterruptedEnd(recorded.endReason)) {
+        setMessage('Microphone was interrupted, tap to try again');
+        setPhaseLogged('interrupted', recorded.endReason);
+        return;
+      }
       setRecordedBlob(recorded.blob);
       const result = await transcribeRecording({
         samples16k: recorded.samples16k,
@@ -238,17 +311,19 @@ export default function SpeakScreen({
         onProgress: (msg) => setWhisperStatus(msg),
       });
       pendingLiveRef.current = null;
+      diag('take', 'transcribed', { source: result.source, text: result.text, heardSpeech: recorded.heardSpeech });
       if (!shouldScoreAttempt(recorded.heardSpeech, result.text)) {
         setError('');
         setMessage("I didn't hear anything, tap to try again");
-        setPhase('nospeech');
+        setPhaseLogged('nospeech', 'no-speech-or-empty', { text: result.text, heardSpeech: recorded.heardSpeech });
         return;
       }
       await scoreAndStore(ladder, result.text, result.source, recorded.blob);
     } catch (err) {
       console.error(err);
+      diag('take', 'scoring failed', { error: String(err) });
       setError('Scoring failed. You can try that phrase again.');
-      setPhase('idle');
+      setPhaseLogged('idle', 'score-error');
     } finally {
       setWhisperStatus('');
       finishingRef.current = false;
@@ -262,38 +337,59 @@ export default function SpeakScreen({
     pendingLiveRef.current = null;
     recordingRef.current = true;
     finishingRef.current = false;
+    lastEndReasonRef.current = null;
     setError('');
     setScore(null);
     setRecordedBlob(null);
     setLevel(0);
-    setPhase('recording');
-    setMessage('Your turn — speak now.');
+    setElapsedMs(0);
+    setPhaseLogged('recording', 'beginRecording', {
+      tapMode,
+      liveSR: useLiveSpeechRecognition(),
+    });
+    setMessage('Recording... tap to stop');
 
-    const live = startLiveRecognition({
-      shouldContinue: () => recordingRef.current,
-    });
-    liveStopRef.current = live.stop;
-    void live.result.then((text) => {
-      if (text && text.trim()) pendingLiveRef.current = text;
-    });
+    // Never start webkitSpeechRecognition on iOS/Safari/mobile: it steals the
+    // getUserMedia track and can end the take immediately.
+    if (useLiveSpeechRecognition()) {
+      const live = startLiveRecognition({
+        shouldContinue: () => recordingRef.current,
+      });
+      liveStopRef.current = live.stop;
+      void live.result.then((text) => {
+        if (text && text.trim()) pendingLiveRef.current = text;
+      });
+      diag('recognition', 'live SpeechRecognition started (desktop only)');
+    } else {
+      liveStopRef.current = null;
+      diag('recognition', 'live SpeechRecognition skipped (using Whisper after stop)');
+    }
 
     try {
       const recorder = await startPhraseRecording({
         stream: mic.stream,
         audioContext: mic.ctx,
-        handsFree: handsFreeRef.current,
+        tapMode,
+        handsFree: !tapMode && handsFreeRef.current,
         referenceDurationMs: referenceMsRef.current,
         onLevel: setLevel,
-        onAutoStop: () => {
-          void finishRecording();
+        onTick: setElapsedMs,
+        onAutoStop: (why) => {
+          diag('take', 'onAutoStop', { why });
+          void finishRecording(why);
+        },
+        onInterrupted: (why) => {
+          diag('take', 'onInterrupted', { why });
+          void finishRecording(why);
         },
       });
       recorderRef.current = recorder;
-    } catch {
+    } catch (err) {
       recordingRef.current = false;
-      live.stop();
+      liveStopRef.current?.();
+      diag('mic', 'startPhraseRecording failed', { error: String(err) });
       setError('Could not open the microphone. Check permissions and try again.');
-      setPhase('idle');
+      setPhaseLogged('idle', 'mic-open-failed');
     }
   };
 
@@ -304,17 +400,18 @@ export default function SpeakScreen({
     setError('');
     setScore(null);
     setRecordedBlob(null);
-    setMessage(item.speed === 'normal' ? 'Listen…' : `Listen — ${item.speed === 'slow' ? 'a little slower' : 'slowly'}…`);
-    setPhase('playing');
+    setMessage('Listen to the example');
+    setPhaseLogged('playing', 'startListening');
     abortRef.current?.abort();
     const abort = new AbortController();
     abortRef.current = abort;
 
     try {
       micRef.current = await prepareMic();
-    } catch {
+    } catch (err) {
+      diag('mic', 'prepareMic failed', { error: String(err) });
       setError('Could not open the microphone. Check permissions and try again.');
-      setPhase('idle');
+      setPhaseLogged('idle', 'mic-permission-failed');
       return;
     }
 
@@ -327,8 +424,10 @@ export default function SpeakScreen({
         signal: abort.signal,
       });
       durationMs = played.durationMs;
+      diag('audio', 'reference ended', { durationMs });
     } catch (err) {
       if ((err as { name?: string })?.name === 'AbortError' && !skippedRef.current) return;
+      diag('audio', 'reference error or skip', { error: String(err), skipped: skippedRef.current });
     }
     if (abort.signal.aborted && !skippedRef.current) return;
     try {
@@ -339,9 +438,10 @@ export default function SpeakScreen({
     if (abort.signal.aborted && !skippedRef.current) return;
     referenceMsRef.current = durationMs;
 
-    if (!handsFreeRef.current) {
-      setPhase('your-turn');
-      setMessage('Your turn');
+    // Always wait for a tap on iOS/mobile (and whenever hands-free is off).
+    if (tapMode) {
+      setPhaseLogged('your-turn', 'reference-settled');
+      setMessage('Tap the mic to speak');
       return;
     }
     await beginRecording();
@@ -349,9 +449,6 @@ export default function SpeakScreen({
 
   useEffect(() => {
     if (demo) return;
-    // On iPhone Safari, auto-playing after a previous-screen tap loses the
-    // user-gesture, so play() / AudioContext / SpeechRecognition fail or end
-    // immediately. Ask for a fresh tap instead.
     if (preferTapToTalk()) return;
     if (autoStart && session && !startedRef.current) {
       startedRef.current = true;
@@ -365,9 +462,10 @@ export default function SpeakScreen({
     startedRef.current = true;
     try {
       micRef.current = await prepareMic();
-    } catch {
+    } catch (err) {
+      diag('mic', 'prepareMic failed on begin', { error: String(err) });
       setError('Could not open the microphone. Check permissions and try again.');
-      setPhase('idle');
+      setPhaseLogged('idle', 'mic-permission-failed');
       return;
     }
     void startListening(session);
@@ -377,7 +475,8 @@ export default function SpeakScreen({
     if (!session) return;
     try {
       micRef.current = await prepareMic();
-    } catch {
+    } catch (err) {
+      diag('mic', 'prepareMic failed on tap-to-speak', { error: String(err) });
       setError('Could not open the microphone. Check permissions and try again.');
       return;
     }
@@ -385,7 +484,7 @@ export default function SpeakScreen({
   };
 
   const handleStop = () => {
-    void finishRecording();
+    void finishRecording('user-stop');
   };
 
   const handleSkipAudio = () => {
@@ -396,7 +495,7 @@ export default function SpeakScreen({
   const handleContinue = () => {
     if (!session) return;
     if (session.done) {
-      setPhase('done');
+      setPhaseLogged('done', 'user-finish');
       return;
     }
     void handleBegin();
@@ -429,6 +528,7 @@ export default function SpeakScreen({
 
   const speedLabel = current.speed === 'normal' ? 'Normal speed' : current.speed === 'slow' ? 'Slower (0.75×)' : 'Slow (0.6×)';
   const meterWidth = Math.min(100, Math.max(4, Math.round(level * 500)));
+  const showYourTurn = phase === 'your-turn' || phase === 'recording' || (demo && (demo === 'prompt' || demo === 'drill'));
 
   return (
     <div className="screen speak-screen">
@@ -446,25 +546,32 @@ export default function SpeakScreen({
         {current.english && <div className="coach-english">{current.english}</div>}
       </div>
 
-      {(phase === 'your-turn' || phase === 'recording' || (demo && (demo === 'prompt' || demo === 'drill'))) && (
+      {showYourTurn && (
         <div className="coach-your-turn" data-testid="coach-your-turn">
-          <p className="coach-your-turn-label">Your turn</p>
+          <p className="coach-your-turn-label">
+            {phase === 'recording' ? 'Recording...' : 'Your turn'}
+          </p>
           <p className="coach-status" data-testid="coach-status">
             {phase === 'recording' && <span className="coach-pulse" aria-hidden="true" />}
-            {message}
+            {phase === 'recording' ? 'Recording... tap to stop' : message || 'Tap the mic to speak'}
           </p>
+          {phase === 'recording' && (
+            <p className="coach-timer" data-testid="coach-timer">{formatTimer(elapsedMs)}</p>
+          )}
           <div className={`coach-meter ${phase === 'recording' ? 'live' : ''}`} aria-hidden="true">
             <div className="coach-meter-bar" style={{ width: `${phase === 'recording' ? meterWidth : 8}%` }} />
           </div>
         </div>
       )}
 
-      {phase !== 'your-turn' && phase !== 'recording' && !(demo && (demo === 'prompt' || demo === 'drill')) && (
+      {!showYourTurn && (
         <p className="coach-status" data-testid="coach-status">
           {phase === 'nospeech' ? (
             <span data-testid="coach-nospeech">{message || "I didn't hear anything, tap to try again"}</span>
+          ) : phase === 'interrupted' ? (
+            <span data-testid="coach-interrupted">{message || 'Microphone was interrupted, tap to try again'}</span>
           ) : (
-            message || (phase === 'idle' ? 'I will play the phrase, then it is your turn.' : '')
+            message || (phase === 'idle' ? 'I will play the example, then it is your turn.' : '')
           )}
         </p>
       )}
@@ -500,7 +607,7 @@ export default function SpeakScreen({
       <div className="coach-actions">
         {phase === 'idle' && (
           <button className="coach-primary" onClick={() => void handleBegin()} data-testid="coach-start">
-            Tap to begin
+            Listen to the example
           </button>
         )}
         {phase === 'playing' && (
@@ -510,16 +617,16 @@ export default function SpeakScreen({
         )}
         {phase === 'your-turn' && (
           <button className="coach-primary" onClick={() => void handleTapToSpeak()} data-testid="coach-tap-start">
-            Tap to start speaking
+            Tap the mic to speak
           </button>
         )}
         {phase === 'recording' && (
           <button className="coach-primary recording" onClick={handleStop} data-testid="coach-stop">
-            {handsFree ? "I'm done" : "Tap when you're done"}
+            Tap to stop
           </button>
         )}
-        {phase === 'scoring' && <p className="coach-status">Scoring your take…</p>}
-        {phase === 'nospeech' && (
+        {phase === 'scoring' && <p className="coach-status" data-testid="coach-scoring">Scoring...</p>}
+        {(phase === 'nospeech' || phase === 'interrupted') && (
           <button className="coach-primary" onClick={handleTryAgain} data-testid="coach-try-again">
             Tap to try again
           </button>
@@ -566,18 +673,20 @@ export default function SpeakScreen({
         )}
       </div>
 
-      <label className="coach-handsfree">
-        <input
-          type="checkbox"
-          checked={handsFree}
-          onChange={(e) => setHandsFree(e.target.checked)}
-          data-testid="hands-free-toggle"
-        />
-        <span>
-          <strong>Hands-free</strong>
-          <em>Auto-stop when you finish. Off is more reliable on iPhone — tap to start and tap to stop.</em>
-        </span>
-      </label>
+      {!preferTapToTalk() && (
+        <label className="coach-handsfree">
+          <input
+            type="checkbox"
+            checked={handsFree}
+            onChange={(e) => setHandsFree(e.target.checked)}
+            data-testid="hands-free-toggle"
+          />
+          <span>
+            <strong>Hands-free</strong>
+            <em>Auto-stop when you finish. On iPhone this stays off so you tap to start and tap to stop.</em>
+          </span>
+        </label>
+      )}
     </div>
   );
 }

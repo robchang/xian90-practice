@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import type { UserProgress, SpeechLine, SpeakAttempt } from '../types';
 import { exportProgress, importProgress } from '../storage';
-import { buildCoachSummary, serializeCoachSummary } from '../progressSummary';
 import { computeWeaknesses } from '../focusSession';
+import { buildLabel } from '../buildInfo';
+import { buildCoachSummary, serializeCoachSummary } from '../progressSummary';
 
 interface ProgressScreenProps {
   progress: UserProgress;
@@ -248,6 +249,7 @@ export default function ProgressScreen({ progress, speechLines, attempts, todayL
           </button>
         </div>
       </div>
+      <p className="progress-build">Build {buildLabel()}</p>
     </div>
   );
 }

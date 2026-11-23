@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "test:whisper": "vite-node scripts/test-whisper-score.mjs",
     "test:vad-mic": "vite-node scripts/test-vad-mic.mjs",
+    "test:webkit": "playwright test",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
@@ -27,6 +28,7 @@
     "workbox-window": "^7.4.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

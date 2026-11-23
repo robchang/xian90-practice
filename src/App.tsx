@@ -10,6 +10,7 @@ import ProgressScreen from './screens/ProgressScreen'
 import { assetUrl } from './assetUrl'
 import { buildTodayFocus, computeWeaknesses, type FocusItem } from './focusSession'
 import './App.css'
+import BuildFooter, { SwUpdateBanner } from './components/BuildFooter'
 
 type Screen = 'today' | 'speak' | 'speech' | 'quiz' | 'archive' | 'progress'
 type SpeakDemo = 'prompt' | 'result' | 'drill'
@@ -194,9 +195,11 @@ function App() {
 
   return (
     <div className="app">
+      <SwUpdateBanner />
       <header className="app-header">
         <h1>西安90</h1>
         <p className="subtitle">Xi'an Incident 90th Anniversary</p>
+        <BuildFooter />
       </header>
 
       <main className="app-main">

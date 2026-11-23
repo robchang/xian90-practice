@@ -35,6 +35,8 @@ jobs:
       - name: Build
         env:
           BASE_PATH: /xian90-practice/
+          VITE_APP_VERSION: speak-r3
+          VITE_APP_COMMIT: ${{ github.sha }}
         run: npm run build
 
       - name: Setup Pages
