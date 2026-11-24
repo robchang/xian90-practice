@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { SpeechLine, DailyLesson, VocabWord, UserProgress, SpeakAttempt } from './types'
 import type { SpeechDocument, SpeechSnapshot } from './speechRevision'
-import { editedLineNumbers, resolvePracticeLine, syncSpeechAudio } from './speechRevision'
+import { editedLineNumbers, migrateSpeechDocument, resolvePracticeLine, syncSpeechAudio } from './speechRevision'
 import { warmSpeechVoices } from './speakAudio'
-import { getProgress, getSpeakAttempts, getSpeechDocument, saveSpeechDocument, clearLineScores, clearSpeechDocument } from './storage'
+import { getProgress, getSpeakAttempts, getSpeechDocument, saveSpeechDocument, writeSpeechDocument, clearLineScores, clearSpeechDocument } from './storage'
 import TodayScreen from './screens/TodayScreen'
 import SpeechScreen from './screens/SpeechScreen'
 import SpeakScreen from './screens/SpeakScreen'
@@ -140,9 +140,15 @@ function App() {
       ])
       const speechData = (await speechRes.json()) as SpeechLine[]
       const storedSpeech = await getSpeechDocument()
+      const { doc: migratedDoc, migrated, staleLineNumbers } = migrateSpeechDocument(storedSpeech, speechData)
+      if (migrated && migratedDoc) {
+        await writeSpeechDocument(migratedDoc)
+        if (staleLineNumbers.length) await clearLineScores(staleLineNumbers)
+      }
+      const activeDoc = migratedDoc
       setCanonicalLines(speechData)
-      setSpeechDoc(storedSpeech)
-      const effective = storedSpeech ? syncSpeechAudio(storedSpeech.current, speechData) : speechData
+      setSpeechDoc(activeDoc)
+      const effective = activeDoc ? syncSpeechAudio(activeDoc.current, speechData) : speechData
       const glossaryData = await glossaryRes.json()
       const lessonsIndex = await lessonsIndexRes.json()
       setSpeechLines(effective)

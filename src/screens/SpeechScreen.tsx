@@ -201,14 +201,17 @@ export default function SpeechScreen({ speechLines, originals = [] }: SpeechScre
           <span>一直</span>
           <span>一岁</span>
           <span>看望</span>
-          <span>故事</span>
-          <span>同胞</span>
-          <span>心痛</span>
-          <span>心里</span>
+          <span>此后</span>
+          <span>那么多</span>
+          <span>从来</span>
+          <span>怨恨</span>
+          <span>后来我明白了</span>
+          <span>问心无愧</span>
           <span>不是自己</span>
-          <span>原则</span>
-          <span>不怕死</span>
-          <span>不爱钱</span>
+          <span>同胞</span>
+          <span>不能</span>
+          <span>忘记</span>
+          <span>爱国将领</span>
           <span>下一代</span>
           <span>中华民族</span>
           <span>繁荣</span>

@@ -3,13 +3,18 @@ import { spokenPinyin } from './speechPinyin'
 
 export const SPEECH_HISTORY_LIMIT = 8
 
+/** Bump when the canonical speech text changes, so old drafts are not applied as current. */
+export const CANONICAL_SPEECH_VERSION = 2
+
 export interface SpeechSnapshot {
   savedAt: number
   lines: SpeechLine[]
+  label?: string
 }
 
 export interface SpeechDocument {
   version: 1
+  canonicalVersion?: number
   current: SpeechLine[]
   history: SpeechSnapshot[]
 }
@@ -69,12 +74,52 @@ export function makeBlankLine(after: number): SpeechLine {
   return { number: after + 1, chinese: '', pinyin: '', english: '' }
 }
 
-export function pushHistory(history: SpeechSnapshot[], current: SpeechLine[], savedAt = Date.now()): SpeechSnapshot[] {
+export function pushHistory(
+  history: SpeechSnapshot[],
+  current: SpeechLine[],
+  savedAt = Date.now(),
+  label?: string
+): SpeechSnapshot[] {
   const snapshot: SpeechSnapshot = {
     savedAt,
     lines: current.map((l) => ({ ...l })),
+    ...(label ? { label } : {}),
   }
   return [...history, snapshot].slice(-SPEECH_HISTORY_LIMIT)
+}
+
+/**
+ * If a stored draft was saved against an older canonical speech, keep it in history
+ * and start from the new official text instead of applying the old draft.
+ */
+export function migrateSpeechDocument(
+  stored: SpeechDocument | null,
+  canonical: SpeechLine[],
+  now = Date.now()
+): { doc: SpeechDocument | null; migrated: boolean; staleLineNumbers: number[] } {
+  if (!stored) {
+    return { doc: null, migrated: false, staleLineNumbers: [] }
+  }
+  if ((stored.canonicalVersion ?? 1) === CANONICAL_SPEECH_VERSION) {
+    return { doc: stored, migrated: false, staleLineNumbers: [] }
+  }
+  const history = pushHistory(stored.history, stored.current, now, 'Previous 14-line draft')
+  const stale = new Set<number>()
+  stored.current.forEach((line) => stale.add(line.number))
+  // Line numbers whose Chinese no longer exists in the new canonical speech
+  const staleLineNumbers = [...stale].filter(
+    (n) => !canonical.some((c) => c.number === n && sameLineText(c.chinese, stored.current.find((l) => l.number === n)?.chinese || ''))
+  )
+  return {
+    doc: {
+      version: 1,
+      canonicalVersion: CANONICAL_SPEECH_VERSION,
+      current: canonical,
+      history,
+    },
+    migrated: true,
+    staleLineNumbers,
+  }
 }
 
 export function formatSpeechPlain(lines: SpeechLine[]): string {

@@ -3,7 +3,7 @@ export interface SimplerOption {
   english: string
 }
 
-/** 1–2 simpler options for each original line. Creed, names, and the core historical claim are preserved. */
+/** 1–2 simpler options for each original line. Names, 问心无愧, and the core historical claim are preserved. */
 export const SIMPLER_OPTIONS: Record<number, SimplerOption[]> = {
   1: [
     { chinese: '各位领导、各位朋友：大家好！', english: 'Leaders and friends: hello, everyone!' },
@@ -40,34 +40,32 @@ export const SIMPLER_OPTIONS: Record<number, SimplerOption[]> = {
     { chinese: '我一岁以后，每年都去台湾看祖父。', english: 'After I turned one, I went to Taiwan every year to see my grandfather.' },
   ],
   8: [
-    { chinese: '他常给我讲故事。', english: 'He often told me stories.' },
-    { chinese: '他给我讲了很多故事。', english: 'He told me many stories.' },
+    { chinese: '他失去了那么多，可是我从没看到他怨恨。', english: 'He had lost so much, but I never saw him bitter.' },
+    { chinese: '他失去了很多，但我从来没看见他心里有恨。', english: 'He had lost a great deal, but I never saw hatred in his heart.' },
   ],
   9: [
-    { chinese: '从这些故事里，我知道他很爱中国，也很爱中国人民。', english: 'From these stories, I know he loved China very much, and also loved the Chinese people very much.' },
-    { chinese: '这些故事让我感到，他很爱中国和中国人民。', english: 'These stories made me feel that he loved China and the Chinese people very much.' },
+    { chinese: '后来我懂了。祖父九十岁时说：做事情，要问心无愧。', english: 'Later I understood. At ninety, grandfather said: in whatever you do, keep a clear conscience.' },
+    { chinese: '后来我明白了。祖父九十岁说过：做事要问心无愧。', english: 'Later I understood. At ninety, grandfather said: whatever you do, keep a clear conscience.' },
   ],
   10: [
-    { chinese: '看到同胞受苦，他很难过。', english: 'Seeing his compatriots suffer, he was very sad.' },
-    { chinese: '看到中国人受苦，他很难过。', english: 'Seeing Chinese people suffer, he was very sad.' },
+    { chinese: '因为他想的不是自己，是国家和同胞。', english: 'Because what he thought of was not himself, but his country and his people.' },
+    { chinese: '因为他心里先想的是国家和同胞，不是自己。', english: 'Because in his heart he thought first of his country and his people, not of himself.' },
   ],
   11: [
-    { chinese: '他想的不是自己，是同胞。', english: 'What he thought of was not himself, but his compatriots.' },
-    { chinese: '他心里先想的是同胞，不是自己。', english: 'In his heart he thought first of his compatriots, not of himself.' },
+    { chinese: '我们不能忘记像他这样爱国的将军。', english: 'We must not forget a patriotic general like him.' },
+    { chinese: '这样的爱国将领，我们不能忘记。', english: 'Patriotic generals like him, we must not forget.' },
   ],
   12: [
-    { chinese: '祖父做人的道理是："不怕死，不爱钱。"', english: 'My grandfather’s way of living was: “Not afraid of death, not loving money.”' },
-    { chinese: '祖父常说，他做人的原则是："不怕死，不爱钱。"', english: 'Grandfather often said his principle was: “Not afraid of death, not loving money.”' },
+    { chinese: '也要让年轻人记住这段历史。', english: 'And we must let young people remember this history.' },
+    { chinese: '我们还要让下一代记住这段历史。', english: 'We must also let the next generation remember this history.' },
   ],
   13: [
-    { chinese: '我会把这段历史告诉年轻人。', english: 'I will tell this history to young people.' },
-    { chinese: '我会把这段历史告诉下一代。', english: 'I will tell this history to the next generation.' },
-  ],
-  14: [
     { chinese: '希望中华民族团结、和平、繁荣！谢谢大家！', english: 'I hope the Chinese nation will be united, peaceful, and prosperous! Thank you all!' },
     { chinese: '愿中华民族团结、和平、繁荣！谢谢！', english: 'May the Chinese nation be united, peaceful, and prosperous! Thank you!' },
   ],
 }
 
-export const CREED = '不怕死，不爱钱'
+/** Key phrase that must not be rewritten away (line 9). */
+export const CREED = '问心无愧'
 export const PROTECTED_NAMES = ['张居信', '张学良', '杨虎城', '赵一荻'] as const
+export const PROTECTED_PHRASES = [CREED] as const

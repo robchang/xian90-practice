@@ -2,8 +2,8 @@
   {
     "number": 1,
     "chinese": "尊敬的各位领导、各位来宾：大家好！",
-    "pinyin": "Zūnjìng de gèwèi lǐngdǎo, gèwèi láibīn: dàjiā hǎo!",
-    "english": "Respected leaders, distinguished guests: hello, everyone!",
+    "pinyin": "Zūnjìng de gèwèi língdǎo, gèwèi láibīn: dàjiā hǎo!",
+    "english": "Distinguished leaders and guests, hello everyone!",
     "audioUrl": "/audio/lines/line_01.mp3"
   },
   {
@@ -23,78 +23,71 @@
   {
     "number": 4,
     "chinese": "九十年前，我的祖父和杨虎城将军，为了停止内战、一致抗日，发动了西安事变。",
-    "pinyin": "Jiǔshí nián qián, wǒ de zǔfù hé Yáng Hǔchéng jiāngjūn, wèile tíngzhǐ nèizhàn, yízhì kàngrì, fādòng le Xī'ān Shìbiàn.",
-    "english": "Ninety years ago, my grandfather and General Yang Hucheng launched the Xi'an Incident in order to stop the civil war and unite in resisting Japan.",
+    "pinyin": "Jiǔshí nián qián, wǒ de zǔfù hé Yáng Hǔchéng jiāngjūn, wèile tíngzhǐ nèizhàn, yízhì kàng Rì, fādòng le Xī'ān Shìbiàn.",
+    "english": "Ninety years ago, my grandfather and General Yang Hucheng launched the Xi'an Incident to end the civil war and unite against Japan.",
     "audioUrl": "/audio/lines/line_04.mp3"
   },
   {
     "number": 5,
     "chinese": "此后，他失去自由五十多年。",
     "pinyin": "Cǐhòu, tā shīqù zìyóu wǔshí duō nián.",
-    "english": "After that, he lost his freedom for more than fifty years.",
+    "english": "Afterward, he lost his freedom for more than fifty years.",
     "audioUrl": "/audio/lines/line_05.mp3"
   },
   {
     "number": 6,
     "chinese": "我的祖母赵一荻，一直陪在他身边。",
     "pinyin": "Wǒ de zǔmǔ Zhào Yīdí, yìzhí péi zài tā shēnbiān.",
-    "english": "My grandmother Zhao Yidi stayed by his side all along.",
+    "english": "My grandmother Zhao Yidi was always by his side.",
     "audioUrl": "/audio/lines/line_06.mp3"
   },
   {
     "number": 7,
     "chinese": "我从一岁起，每年都去台湾看望祖父。",
     "pinyin": "Wǒ cóng yí suì qǐ, měinián dōu qù Táiwān kànwàng zǔfù.",
-    "english": "Starting from the age of one, I went to Taiwan every year to visit my grandfather.",
+    "english": "From the age of one, I visited my grandfather in Taiwan every year.",
     "audioUrl": "/audio/lines/line_07.mp3"
   },
   {
     "number": 8,
-    "chinese": "他给我讲了很多故事。",
-    "pinyin": "Tā gěi wǒ jiǎng le hěn duō gùshi.",
-    "english": "He told me many stories.",
+    "chinese": "他失去了那么多，可是我从来没有看到他有一点怨恨。",
+    "pinyin": "Tā shīqù le nàme duō, kěshì wǒ cónglái méiyǒu kàndào tā yǒu yìdiǎn yuànhèn.",
+    "english": "He had lost so much, yet I never once saw him bitter.",
     "audioUrl": "/audio/lines/line_08.mp3"
   },
   {
     "number": 9,
-    "chinese": "从这些故事里，我感受到他深爱中国，深爱中国人民。",
-    "pinyin": "Cóng zhèxiē gùshi lǐ, wǒ gǎnshòu dào tā shēn'ài Zhōngguó, shēn'ài Zhōngguó rénmín.",
-    "english": "From these stories, I felt that he deeply loved China and deeply loved the Chinese people.",
+    "chinese": "后来我明白了。祖父九十岁时说过：做事情，要问心无愧。",
+    "pinyin": "Hòulái wǒ míngbai le. Zǔfù jiǔshí suì shí shuō guo: zuò shìqing, yào wèn xīn wú kuì.",
+    "english": "Later I understood. At ninety, my grandfather said: in whatever you do, keep a clear conscience.",
     "audioUrl": "/audio/lines/line_09.mp3"
   },
   {
     "number": 10,
-    "chinese": "看到同胞受苦，他很心痛。",
-    "pinyin": "Kàndào tóngbāo shòukǔ, tā hěn xīntòng.",
-    "english": "Seeing his compatriots suffer, he was deeply pained.",
+    "chinese": "因为他心里想的，不是自己，而是国家和同胞。",
+    "pinyin": "Yīnwèi tā xīnlǐ xiǎng de, bú shì zìjǐ, ér shì guójiā hé tóngbāo.",
+    "english": "Because what was in his heart was not himself, but his country and his people.",
     "audioUrl": "/audio/lines/line_10.mp3"
   },
   {
     "number": 11,
-    "chinese": "他心里想的，不是自己，而是同胞。",
-    "pinyin": "Tā xīnlǐ xiǎng de, búshì zìjǐ, érshì tóngbāo.",
-    "english": "What was in his heart was not himself, but his compatriots.",
+    "chinese": "我们不能忘记这样的爱国将领。",
+    "pinyin": "Wǒmen bù néng wàngjì zhèyàng de àiguó jiànglǐng.",
+    "english": "We must not forget patriotic generals like him.",
     "audioUrl": "/audio/lines/line_11.mp3"
   },
   {
     "number": 12,
-    "chinese": "祖父做人的原则是：\"不怕死，不爱钱。\"",
-    "pinyin": "Zǔfù zuòrén de yuánzé shì: \"Bú pà sǐ, bú ài qián.\"",
-    "english": "My grandfather's principles were: \"Not afraid of death, not loving money.\"",
+    "chinese": "也要让下一代记住这段历史。",
+    "pinyin": "Yě yào ràng xià yí dài jìzhù zhè duàn lìshǐ.",
+    "english": "And we must let the next generation remember this history.",
     "audioUrl": "/audio/lines/line_12.mp3"
   },
   {
     "number": 13,
-    "chinese": "我会把这段历史，告诉下一代。",
-    "pinyin": "Wǒ huì bǎ zhè duàn lìshǐ, gàosu xià yí dài.",
-    "english": "I will tell this history to the next generation.",
-    "audioUrl": "/audio/lines/line_13.mp3"
-  },
-  {
-    "number": 14,
     "chinese": "愿中华民族团结、和平、繁荣！谢谢大家！",
     "pinyin": "Yuàn Zhōnghuá mínzú tuánjié, hépíng, fánróng! Xièxie dàjiā!",
     "english": "May the Chinese nation be united, peaceful, and prosperous! Thank you all!",
-    "audioUrl": "/audio/lines/line_14.mp3"
+    "audioUrl": "/audio/lines/line_13.mp3"
   }
 ]

@@ -1,7 +1,7 @@
 import localforage from 'localforage';
 import type { UserProgress, LineScore, QuizAttempt, VocabProgress, SpeakAttempt, SpeechLine } from './types';
 import type { SpeechDocument, SpeechSnapshot } from './speechRevision';
-import { pushHistory, syncSpeechAudio } from './speechRevision';
+import { CANONICAL_SPEECH_VERSION, pushHistory, syncSpeechAudio } from './speechRevision';
 
 const PROGRESS_KEY = 'user_progress';
 
@@ -136,12 +136,23 @@ export async function getSpeechDocument(): Promise<SpeechDocument | null> {
 
 export async function saveSpeechDocument(current: SpeechLine[], previous?: SpeechDocument | null): Promise<SpeechDocument> {
   const history = pushHistory(previous?.history || [], previous?.current || current);
-  const doc: SpeechDocument = { version: 1, current, history };
+  const doc: SpeechDocument = {
+    version: 1,
+    canonicalVersion: previous?.canonicalVersion ?? CANONICAL_SPEECH_VERSION,
+    current,
+    history,
+  };
   // If this is the very first save, history already has the previous current;
   // when previous is null, we still want a snapshot of what we are saving.
   if (!previous) {
     doc.history = pushHistory([], current);
+    doc.canonicalVersion = CANONICAL_SPEECH_VERSION;
   }
+  await localforage.setItem(SPEECH_DOC_KEY, doc);
+  return doc;
+}
+
+export async function writeSpeechDocument(doc: SpeechDocument): Promise<SpeechDocument> {
   await localforage.setItem(SPEECH_DOC_KEY, doc);
   return doc;
 }

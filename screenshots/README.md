@@ -11,7 +11,7 @@ These screenshots show all 6 screens of the Xi'an 90 Mandarin Practice app.
 
 ## 2. Speech Screen
 ![Speech Screen](2-speech-screen.png)
-- All 14 lines of the commemoration speech
+- All 13 lines of the commemoration speech
 - Toggleable pinyin and English translations
 - Per-line audio playback
 - Shadowing mode and podium view

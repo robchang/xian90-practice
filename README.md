@@ -1,6 +1,6 @@
 # Xi'an 90 Mandarin Practice App
 
-A polished, mobile-first Progressive Web App (PWA) designed to help Rob Chang (张居信) prepare for delivering a 14-line Mandarin speech at the Xi'an Incident 90th anniversary commemoration in Beijing on December 12, 2026.
+A polished, mobile-first Progressive Web App (PWA) designed to help Rob Chang (张居信) prepare for delivering a 13-line Mandarin speech at the Xi'an Incident 90th anniversary commemoration in Beijing on December 12, 2026.
 
 ## Features
 
@@ -11,7 +11,7 @@ A polished, mobile-first Progressive Web App (PWA) designed to help Rob Chang (�
 - Daily reminders
 
 ### 📜 Speech Screen
-- All 14 lines of the commemoration speech
+- All 13 lines of the commemoration speech
 - Toggleable pinyin and English translations
 - Per-line audio playback (browser TTS fallback)
 - Shadowing mode: listen → pause → repeat → advance

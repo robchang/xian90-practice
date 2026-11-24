@@ -125,6 +125,19 @@ export interface HardToken {
 
 /** Short English glosses for harder words that appear in this speech or its simpler options. */
 export const HARD_MEANINGS: Record<string, string> = {
+  事情: 'matter / affair',
+  记住: 'to remember',
+  一点: 'a bit',
+  那么: 'so / that much',
+  不能: 'cannot / must not',
+  忘记: 'to forget',
+  从来: 'never / always (with 没有: never)',
+  明白: 'to understand',
+  爱国将领: 'patriotic general',
+  爱国: "patriotic / to love one's country",
+  将领: 'a general / military commander',
+  问心无愧: 'to have a clear conscience',
+  怨恨: 'bitterness / resentment',
   尊敬: 'respected / to honor',
   各位: 'everyone here (formal)',
   领导: 'leaders',
@@ -195,12 +208,23 @@ export function markHardWords(chinese: string): HardToken[] {
     let matched = ch
     let end = i + 1
     const max = Math.min(chinese.length, i + 6)
-    for (let j = max; j > i; j--) {
+    // Prefer multi-syllable set phrases (问心无愧, 爱国将领) over splitting into HSK characters.
+    for (let j = max; j > i + 2; j--) {
       const slice = chinese.slice(i, j)
-      if (PROPER_NOUNS.has(slice) || HSK_1_3.has(slice)) {
+      if (HARD_MEANINGS[slice] || PROPER_NOUNS.has(slice)) {
         matched = slice
         end = j
         break
+      }
+    }
+    if (end === i + 1) {
+      for (let j = max; j > i; j--) {
+        const slice = chinese.slice(i, j)
+        if (PROPER_NOUNS.has(slice) || HSK_1_3.has(slice)) {
+          matched = slice
+          end = j
+          break
+        }
       }
     }
     // If this character is not itself HSK/name, try a longer hard-word or name.

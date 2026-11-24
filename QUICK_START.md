@@ -25,7 +25,7 @@ The app will be available at http://localhost:5173
 - Beautiful Chinese-inspired UI
 
 ✅ **Sample Content Included**
-- 14-line commemoration speech with pinyin and English
+- 13-line commemoration speech with pinyin and English
 - Day 1 lesson with vocabulary and quiz
 - 37-word glossary from the speech
 - Content pipeline ready for more lessons
@@ -38,7 +38,7 @@ mandarin-speech-app/
 ├── DEPLOYMENT.md           # 5 deployment options
 ├── public/
 │   ├── data/
-│   │   ├── speech.json     # The 14 speech lines
+│   │   ├── speech.json     # The 13 speech lines
 │   │   ├── glossary.json   # Vocabulary words
 │   │   └── lessons/        # Daily lessons
 │   └── icon-*.png          # PWA icons
@@ -105,7 +105,7 @@ See DEPLOYMENT.md for detailed instructions.
    - Quick quiz preview
 
 2. **Speech Screen**
-   - All 14 lines with toggleable pinyin/English
+   - All 13 lines with toggleable pinyin/English
    - Per-line audio playback
    - Shadowing mode (play → pause → repeat)
    - Podium view for rehearsal

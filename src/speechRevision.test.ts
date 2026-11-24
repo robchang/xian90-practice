@@ -12,13 +12,15 @@ import {
   sameLineText,
   editedLineNumbers,
   resolvePracticeLine,
+  migrateSpeechDocument,
+  CANONICAL_SPEECH_VERSION,
 } from './speechRevision'
 import type { SpeechLine } from './types'
 
 const originals: SpeechLine[] = [
   { number: 1, chinese: '尊敬的各位领导、各位来宾：大家好！', pinyin: 'x', english: 'Hello', audioUrl: '/audio/lines/line_01.mp3' },
   { number: 4, chinese: '九十年前，我的祖父和杨虎城将军，为了停止内战、一致抗日，发动了西安事变。', pinyin: 'x', english: 'Incident', audioUrl: '/audio/lines/line_04.mp3' },
-  { number: 12, chinese: '祖父做人的原则是："不怕死，不爱钱。"', pinyin: 'x', english: 'Creed', audioUrl: '/audio/lines/line_12.mp3' },
+  { number: 9, chinese: '后来我明白了。祖父九十岁时说过：做事情，要问心无愧。', pinyin: 'x', english: 'Conscience', audioUrl: '/audio/lines/line_09.mp3' },
 ]
 
 describe('spoken pinyin sandhi', () => {
@@ -31,8 +33,8 @@ describe('spoken pinyin sandhi', () => {
 })
 
 describe('simpler options stay faithful', () => {
-  test('creed is unchanged in every line-12 option', () => {
-    const opts = SIMPLER_OPTIONS[12]
+  test('问心无愧 is unchanged in every line-9 option', () => {
+    const opts = SIMPLER_OPTIONS[9]
     expect(opts.length).toBeGreaterThanOrEqual(1)
     for (const opt of opts) {
       expect(opt.chinese).toContain(CREED)
@@ -64,6 +66,13 @@ describe('hard-word hints', () => {
     expect(easy.join('')).toContain('北京')
     expect(easy.join('')).toContain('我叫')
     expect(easy.join('')).toContain('各位')
+  })
+
+  test('问心无愧 is marked as one hard phrase', () => {
+    const tokens = markHardWords('做事情，要问心无愧。')
+    const hard = tokens.filter((tok) => tok.hard).map((tok) => tok.text)
+    expect(hard).toContain('问心无愧')
+
   })
 })
 
@@ -129,4 +138,21 @@ test('resolvePracticeLine maps a canonical lesson line to the revised speech lin
   expect(found?.number).toBe(1)
   expect(found?.chinese).toBe('各位领导、各位朋友：大家好！')
   expect(found?.audioUrl).toBeUndefined()
+})
+
+
+test('migrateSpeechDocument parks an old draft in history and uses the new canonical text', () => {
+  const oldDraft: SpeechLine[] = [
+    { number: 1, chinese: '尊敬的各位领导、各位来宾：大家好！', pinyin: 'x', english: 'Hello' },
+    { number: 12, chinese: '祖父做人的原则是："不怕死，不爱钱。"', pinyin: 'x', english: 'Creed' },
+  ]
+  const stored = { version: 1 as const, canonicalVersion: 1, current: oldDraft, history: [] }
+  const { doc, migrated, staleLineNumbers } = migrateSpeechDocument(stored, originals, 1_700_000_000_000)
+  expect(migrated).toBe(true)
+  expect(doc?.canonicalVersion).toBe(CANONICAL_SPEECH_VERSION)
+  expect(doc?.current).toEqual(originals)
+  expect(doc?.history[0].label).toBe('Previous 14-line draft')
+  expect(doc?.history[0].lines[1].chinese).toContain('不怕死')
+  expect(staleLineNumbers).toContain(12)
+  expect(staleLineNumbers).not.toContain(1)
 })

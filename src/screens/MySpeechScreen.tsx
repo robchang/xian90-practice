@@ -144,7 +144,7 @@ export default function MySpeechScreen({
       <h2>My Speech</h2>
       <p className="focus-lead">
         Read every line, simplify words where you can, and save. Practice uses this draft on this phone.
-        I will not change the creed “不怕死，不爱钱,” the names, or the core history.
+        I will not change the names, the words “问心无愧,” or the core history.
       </p>
 
       <div className="myspeech-toolbar">
@@ -184,7 +184,7 @@ export default function MySpeechScreen({
               })
               return (
                 <option key={snap.savedAt} value={i}>
-                  {when} PT · {snap.lines.length} lines
+                  {when} PT · {snap.lines.length} lines{snap.label ? ` · ${snap.label}` : ''}
                 </option>
               )
             })}

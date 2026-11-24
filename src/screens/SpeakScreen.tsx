@@ -70,18 +70,18 @@ function toCoachInputs(focusItems: FocusItem[], speechLines: SpeechLine[]): Coac
 }
 
 function demoScore(): UtteranceScore {
-  return scoreUtterance('不怕死，不爱钱。', '不怕死，不要钱。');
+  return scoreUtterance('问心无愧。', '问心有愧。');
 }
 
 function demoSession(kind: 'prompt' | 'result' | 'drill'): LadderSession {
   const items = [
     {
-      id: 'line-12',
+      id: 'line-9',
       kind: 'line' as const,
-      chinese: '祖父做人的原则是："不怕死，不爱钱。"',
-      pinyin: 'Zǔfù zuòrén de yuánzé shì: "Bú pà sǐ, bú ài qián."',
-      english: "My grandfather's principles were: \"Not afraid of death, not loving money.\"",
-      audioUrl: '/audio/lines/line_12.mp3',
+      chinese: '后来我明白了。祖父九十岁时说过：做事情，要问心无愧。',
+      pinyin: 'Hòulái wǒ míngbai le. Zǔfù jiǔshí suì shí shuō guo: zuò shìqing, yào wèn xīn wú kuì.',
+      english: 'Later I understood. At ninety, my grandfather said: in whatever you do, keep a clear conscience.',
+      audioUrl: '/audio/lines/line_09.mp3',
     },
   ];
   const session = createLadder(items);
@@ -90,16 +90,16 @@ function demoSession(kind: 'prompt' | 'result' | 'drill'): LadderSession {
       ...session,
       stage: 'word-drill',
       current: {
-        id: 'line-12-word-0-不爱钱',
+        id: 'line-9-word-0-问心无愧',
         kind: 'word',
-        chinese: '不爱钱',
-        pinyin: 'bú ài qián',
-        english: 'not loving money',
-        parentId: 'line-12',
+        chinese: '问心无愧',
+        pinyin: 'wèn xīn wú kuì',
+        english: 'keep a clear conscience',
+        parentId: 'line-9',
         speed: 'slower',
         playbackRate: 0.6,
       },
-      events: [{ kind: 'word-drill', message: "Let's concentrate on 不爱钱 together." }],
+      events: [{ kind: 'word-drill', message: "Let's concentrate on 问心无愧 together." }],
     };
   }
   return session;

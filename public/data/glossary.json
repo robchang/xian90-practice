@@ -323,5 +323,65 @@
     "chinese": "辞世",
     "pinyin": "císhì",
     "english": "to pass away (formal)"
+  },
+  {
+    "chinese": "怨恨",
+    "pinyin": "yuànhèn",
+    "english": "bitterness, resentment"
+  },
+  {
+    "chinese": "后来",
+    "pinyin": "hòulái",
+    "english": "later, afterwards"
+  },
+  {
+    "chinese": "明白",
+    "pinyin": "míngbai",
+    "english": "to understand"
+  },
+  {
+    "chinese": "从来",
+    "pinyin": "cónglái",
+    "english": "always; with 没有, never"
+  },
+  {
+    "chinese": "那么多",
+    "pinyin": "nàme duō",
+    "english": "so much, that many"
+  },
+  {
+    "chinese": "不能",
+    "pinyin": "bù néng",
+    "english": "cannot; must not"
+  },
+  {
+    "chinese": "忘记",
+    "pinyin": "wàngjì",
+    "english": "to forget"
+  },
+  {
+    "chinese": "记住",
+    "pinyin": "jìzhù",
+    "english": "to remember, to keep in mind"
+  },
+  {
+    "chinese": "下一代",
+    "pinyin": "xià yí dài",
+    "english": "the next generation"
+  },
+  {
+    "chinese": "看望",
+    "pinyin": "kànwàng",
+    "english": "to visit (a person)"
+  },
+  {
+    "chinese": "此后",
+    "pinyin": "cǐhòu",
+    "english": "after this, afterward"
+  },
+  {
+    "chinese": "事情",
+    "pinyin": "shìqing",
+    "english": "matter, affair (light 情)"
   }
 ]
