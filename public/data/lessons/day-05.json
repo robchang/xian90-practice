@@ -1,0 +1,75 @@
+{
+  "day": 5,
+  "date": "2026-11-25",
+  "story": {
+    "title": "Today's goal: the long line, line 4, at full speed",
+    "content": "Today: line 4 sounds natural and steady in one breath group at a time. It is the longest line (about 10 seconds slowly), so we build it in four chunks: (1) 九十年前 / 我的祖父和杨虎城将军; (2) 为了停止内战; (3) 一致抗日; (4) 发动了西安事变. Say each chunk 3 times slowly, then join (1)+(2), (3)+(4), and finally the whole line. Pauses: after 九十年前 (short), after 将军 (short breath), after 抗日 (a clear breath before the last chunk). No progress file yet: tap \"Send progress to my coach\" in the app's Progress screen and paste it in the chat so I can tailor tomorrow.",
+    "keySentence": {
+      "chinese": "九十年前，我的祖父和杨虎城将军，为了停止内战、一致抗日，发动了西安事变。",
+      "pinyin": "Jiǔshí nián qián, wǒ de zǔfù hé Yáng Hǔchéng jiāngjūn, wèile tíngzhǐ nèizhàn, yízhì kàngRì, fādòngle Xī'ān Shìbiàn.",
+      "english": "Ninety years ago, my grandfather and General Yang Hucheng, in order to stop the civil war and unite against Japan, launched the Xi'an Incident."
+    }
+  },
+  "vocabulary": [
+    {
+      "chinese": "祖父",
+      "pinyin": "zǔfù",
+      "english": "paternal grandfather",
+      "example": "我的祖父。Wǒ de zǔfù."
+    },
+    {
+      "chinese": "停止",
+      "pinyin": "tíngzhǐ",
+      "english": "to stop",
+      "example": "停止内战。Tíngzhǐ nèizhàn."
+    },
+    {
+      "chinese": "内战",
+      "pinyin": "nèizhàn",
+      "english": "civil war",
+      "example": "停止内战。Tíngzhǐ nèizhàn."
+    },
+    {
+      "chinese": "一致",
+      "pinyin": "yízhì",
+      "english": "united, unanimous",
+      "example": "一致抗日。Yízhì kàngRì."
+    },
+    {
+      "chinese": "发动",
+      "pinyin": "fādòng",
+      "english": "to launch",
+      "example": "发动了西安事变。Fādòngle Xī'ān Shìbiàn."
+    }
+  ],
+  "practiceLines": [
+    {
+      "chinese": "九十年前，我的祖父和杨虎城将军，为了停止内战、一致抗日，发动了西安事变。",
+      "pinyin": "Jiǔshí nián qián, wǒ de zǔfù hé Yáng Hǔchéng jiāngjūn, wèile tíngzhǐ nèizhàn, yízhì kàngRì, fādòngle Xī'ān Shìbiàn.",
+      "english": "Ninety years ago, my grandfather and General Yang Hucheng, to stop the civil war and unite against Japan, launched the Xi'an Incident.",
+      "audioUrl": "/audio/daily/day-05/lines/line_01.mp3"
+    }
+  ],
+  "pronunciationTip": "PRONUNCIATION CLINIC. (1) zh / ch / sh vs z / c / s (止 zhǐ, 城 chéng, 事 shì, 祖 zǔ, 西 xī): for zh, ch, sh curl the tongue tip back; for z, c, s keep it flat behind the teeth. Contrast: 停止 tíngzhǐ vs 祖父 zǔfù; 事变 shìbiàn vs 四 sì. (2) 一致 yízhì: the dictionary tone is yīzhì, but 一 changes to yí before the 4th tone 致 zhì. Say it as written, \"yí-zhì\". Also 九十 jiǔshí (jiǔ stays low, then rises), and 西安 Xī'ān has a clear break: Xī-ān, not \"Xian\". (3) Third tones together: 虎城 Hǔchéng and 祖父 zǔfù. 我的祖父 wǒ de zǔfù: 的 is light, so say it smoothly, \"wǒ de zǔfù\". 停止内战 tíngzhǐ nèizhàn: 止 only dips halfway. Neutral tones: 的 de, 了 le (light and short). DELIVERY: slow and weighty. Stress 祖父, 停止内战, 一致抗日 and 西安事变. Pause briefly after 九十年前 and after 将军, and take a breath after 抗日. Pace: about 10 seconds slowly, 8 seconds at final speed.\n**Daily run-through:** read all 13 lines of the main speech aloud once (about 90 sec), then listen to full_speech_normal.mp3 once. Practice plan (10–15 min): listen to today's shadowing.mp3 (3 min); shadow each chunk twice, then the whole line twice; record line 4 in the app's Speak coach and compare; listen to full_speech_normal.mp3 once.",
+  "quiz": [
+    {
+      "id": "q5-1",
+      "type": "character-to-meaning",
+      "question": "Review from Day 4: in line 3, how do you say 邀请我 (yāoqǐng wǒ)?",
+      "correct": "yāoqíng wǒ. 请 rises to 2nd tone before the 3rd tone 我",
+      "options": [
+        "yāoqíng wǒ. 请 rises to 2nd tone before the 3rd tone 我"
+      ]
+    }
+  ],
+  "audioFiles": {
+    "story": "/audio/daily/day-05/lines/line_01.mp3",
+    "vocab": [
+      "/audio/daily/day-05/words.mp3"
+    ],
+    "shadowing": "/audio/daily/day-05/shadowing.mp3",
+    "words": "/audio/daily/day-05/words.mp3",
+    "fullNormal": "/audio/daily/day-05/full_normal.mp3",
+    "fullSlow": "/audio/daily/day-05/full_slow.mp3"
+  }
+}
