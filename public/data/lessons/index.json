@@ -29,6 +29,12 @@
       "date": "2026-11-25",
       "title": "Wed 25 Nov 2026",
       "file": "day-05.json"
+    },
+    {
+      "day": 6,
+      "date": "2026-11-26",
+      "title": "Thu 26 Nov 2026",
+      "file": "day-06.json"
     }
   ]
 }
