@@ -1,0 +1,79 @@
+{
+  "day": 7,
+  "date": "2026-11-27",
+  "story": {
+    "title": "Today's goal: lines 7 and 8 warm and steady, with 怨恨 clear",
+    "content": "Today: lines 7 and 8 sound warm and natural. Line 7 is built in three chunks: 我从一岁起 / 每年都去台湾 / 看望祖父. Line 8 in four: 他失去了那么多 / 可是我从来没有看到他 / 有一点 / 怨恨. No progress file yet: tap \"Send progress to my coach\" in the app's Progress screen and paste it in the chat so I can tailor tomorrow.",
+    "keySentence": {
+      "chinese": "他失去了那么多，可是我从来没有看到他有一点怨恨。",
+      "pinyin": "Tā shīqùle nàme duō, kěshì wǒ cónglái méiyǒu kàndào tā yǒu yìdiǎn yuànhèn.",
+      "english": "He lost so much, but I never saw in him even a bit of bitterness."
+    }
+  },
+  "vocabulary": [
+    {
+      "chinese": "每年",
+      "pinyin": "měinián",
+      "english": "every year",
+      "example": "每年都去。Měinián dōu qù."
+    },
+    {
+      "chinese": "看望",
+      "pinyin": "kànwàng",
+      "english": "to visit (someone)",
+      "example": "看望祖父。Kànwàng zǔfù."
+    },
+    {
+      "chinese": "从来没有",
+      "pinyin": "cónglái méiyǒu",
+      "english": "never",
+      "example": "从来没有看到。Cónglái méiyǒu kàndào."
+    },
+    {
+      "chinese": "一点",
+      "pinyin": "yìdiǎn",
+      "english": "a bit",
+      "example": "有一点。Yǒu yìdiǎn."
+    },
+    {
+      "chinese": "怨恨",
+      "pinyin": "yuànhèn",
+      "english": "bitterness, resentment",
+      "example": "一点怨恨。Yìdiǎn yuànhèn."
+    }
+  ],
+  "practiceLines": [
+    {
+      "chinese": "我从一岁起，每年都去台湾看望祖父。",
+      "pinyin": "Wǒ cóng yí suì qǐ, měinián dōu qù Táiwān kànwàng zǔfù.",
+      "english": "From the age of one, I visited my grandfather in Taiwan every year."
+    },
+    {
+      "chinese": "他失去了那么多，可是我从来没有看到他有一点怨恨。",
+      "pinyin": "Tā shīqùle nàme duō, kěshì wǒ cónglái méiyǒu kàndào tā yǒu yìdiǎn yuànhèn.",
+      "english": "He lost so much, but I never saw in him even a bit of bitterness."
+    }
+  ],
+  "pronunciationTip": "PRONUNCIATION CLINIC. (1) 一 changes tone: in 一岁 the dictionary tone is yīsuì, but before the 4th tone 岁 it is spoken yí (yí suì). In 有一点 it is spoken yì before the 3rd tone 点 (yìdiǎn). (2) Third tones together: 我 wǒ and 有 yǒu are 3rd tones. In 有一点, 有 dips and 点 dips, so keep it light and flowing. Say 可是 kěshì smoothly. (3) yuàn and the ü sounds: 怨 yuàn starts with ü: round your lips as for \"oo\", then say \"ee\" without moving them, then \"-an\". Contrast: 怨恨 yuànhèn vs 看望 kànwàng (both 4th tones, but yuàn needs the rounded ü). Also 去 qù: soft \"ch\" with spread lips, vs 起 qǐ. Contrast: 失去 shīqù vs 每年 měinián. Neutral tone: 了 le light and short in 失去了. DELIVERY: line 7: gentle and warm, pause after 起 (short) and after 台湾 (tiny). Stress 每年 and 看望. Line 8: pause after 那么多 (a full breath), then stress 从来没有, and slow down on 怨恨 as the key word. Pace: about 5 seconds for line 7, 7 seconds for line 8.\n**Daily run-through:** read all 13 lines of the main speech aloud once (about 90 sec), then listen to full_speech_normal.mp3 once. Practice plan (10–15 min): listen to today's shadowing.mp3 (3 min); shadow each chunk twice, then each whole line twice; record lines 7 and 8 in the app's Speak coach and compare; listen to full_speech_normal.mp3 once.",
+  "quiz": [
+    {
+      "id": "q7-1",
+      "type": "character-to-meaning",
+      "question": "Review from Day 6: in 我的祖母赵一荻，一直陪在他身边, how do you say 一 in 赵一荻 and in 一直?",
+      "correct": "Zhào Yīdí keeps yī because it is in a name; 一直 is spoken yìzhí.",
+      "options": [
+        "Zhào Yīdí keeps yī because it is in a name; 一直 is spoken yìzhí."
+      ]
+    }
+  ],
+  "audioFiles": {
+    "story": "/audio/daily/day-07/lines/line_01.mp3",
+    "vocab": [
+      "/audio/daily/day-07/words.mp3"
+    ],
+    "shadowing": "/audio/daily/day-07/shadowing.mp3",
+    "words": "/audio/daily/day-07/words.mp3",
+    "fullNormal": "/audio/daily/day-07/full_normal.mp3",
+    "fullSlow": "/audio/daily/day-07/full_slow.mp3"
+  }
+}
