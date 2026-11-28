@@ -67,7 +67,7 @@ test('iPhone WebKit tap-to-talk does not end during 4s silence and scores the de
   await expect(page.getByRole('heading', { name: 'Speak coach' })).toBeVisible()
 
   const version = await page.locator('[data-testid="build-version"]').textContent()
-  expect(version).toContain('speak-r5')
+  expect(version).toContain('speak-r6')
 
   const closeDiag = page.getByRole('button', { name: 'Close' })
   if (await closeDiag.count()) await closeDiag.click()

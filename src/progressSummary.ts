@@ -35,6 +35,7 @@ export interface CoachProgressSummary {
   }
   todayFocus: Array<{ id: string; chinese: string; reason: string }>
   topTroubleSyllables: Array<{ character: string; expected: string; missRate: number; samples: number }>
+  unknownChars?: string[]
 }
 
 function startOfDay(ts: number): number {
@@ -54,6 +55,7 @@ export function buildCoachSummary(args: {
   speechLines: SpeechLine[]
   todayLessonLines?: SpeechLine[]
   now?: number
+  unknownChars?: string[]
 }): CoachProgressSummary {
   const now = args.now ?? Date.now()
   const event = Date.parse('2026-12-12T00:00:00+08:00')
@@ -136,6 +138,7 @@ export function buildCoachSummary(args: {
     recentAttempts,
     todayFocus: focus.map((f: FocusItem) => ({ id: f.id, chinese: f.chinese, reason: f.reason })),
     topTroubleSyllables,
+    unknownChars: args.unknownChars ?? [],
   }
 }
 

@@ -12,9 +12,10 @@ interface ProgressScreenProps {
   todayLessonLines: SpeechLine[];
   onRefresh: () => void;
   onOpenArchive: () => void;
+  unknownChars?: string[];
 }
 
-export default function ProgressScreen({ progress, speechLines, attempts, todayLessonLines, onRefresh, onOpenArchive }: ProgressScreenProps) {
+export default function ProgressScreen({ progress, speechLines, attempts, todayLessonLines, onRefresh, onOpenArchive, unknownChars = [] }: ProgressScreenProps) {
   const [showExport, setShowExport] = useState(false);
   const [exportData, setExportData] = useState('');
   const [importData, setImportData] = useState('');
@@ -57,7 +58,7 @@ export default function ProgressScreen({ progress, speechLines, attempts, todayL
   };
 
   const handleShareCoach = async () => {
-    const summary = buildCoachSummary({ attempts, speechLines, todayLessonLines });
+    const summary = buildCoachSummary({ attempts, speechLines, todayLessonLines, unknownChars });
     const text = serializeCoachSummary(summary);
     try {
       if (navigator.share) {
@@ -79,7 +80,7 @@ export default function ProgressScreen({ progress, speechLines, attempts, todayL
   };
 
   const trouble = computeWeaknesses(attempts).filter((w) => w.kind === 'word' || !w.id.startsWith('line-')).slice(0, 5);
-  const summary = buildCoachSummary({ attempts, speechLines, todayLessonLines });
+  const summary = buildCoachSummary({ attempts, speechLines, todayLessonLines, unknownChars });
 
   const totalAttempts = attempts.length || Object.values(progress.lineScores).reduce((sum, scores) => sum + scores.length, 0);
   const quizAccuracy = progress.quizAttempts.length > 0

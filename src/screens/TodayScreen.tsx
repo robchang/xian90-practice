@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { DailyLesson, UserProgress } from '../types';
 import type { FocusItem, WeakItem } from '../focusSession';
 import { updateStreak, markDayComplete } from '../storage';
+import WordsAudioPlayer from '../components/WordsAudioPlayer';
 
 interface TodayScreenProps {
   lessons: DailyLesson[];
@@ -123,6 +124,13 @@ export default function TodayScreen({ lessons, progress, targetDate, onRefresh, 
             </div>
           ))}
         </div>
+
+        {currentLesson.audioFiles?.words && (
+          <WordsAudioPlayer
+            audioUrl={currentLesson.audioFiles.words}
+            title="Today's words audio"
+          />
+        )}
 
         <h3>Practice Lines</h3>
         <div className="practice-lines">

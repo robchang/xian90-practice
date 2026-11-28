@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "audio": "words.mp3",
+  "voice": "zh-CN-YunxiNeural",
+  "words": [
+    {
+      "chinese": "失去",
+      "pinyin": "shīqù",
+      "english": "to lose",
+      "spans": [
+        {
+          "start": 0.0,
+          "end": 0.768
+        },
+        {
+          "start": 3.033,
+          "end": 3.693
+        }
+      ]
+    },
+    {
+      "chinese": "自由",
+      "pinyin": "zìyóu",
+      "english": "freedom",
+      "spans": [
+        {
+          "start": 5.949,
+          "end": 6.642
+        },
+        {
+          "start": 8.919,
+          "end": 9.612
+        }
+      ]
+    },
+    {
+      "chinese": "五十多年",
+      "pinyin": "wǔshí duō nián",
+      "english": "more than fifty years",
+      "spans": [
+        {
+          "start": 11.867,
+          "end": 12.852
+        },
+        {
+          "start": 15.078,
+          "end": 16.064
+        }
+      ]
+    },
+    {
+      "chinese": "祖母",
+      "pinyin": "zǔmǔ",
+      "english": "paternal grandmother",
+      "spans": [
+        {
+          "start": 18.318,
+          "end": 18.927
+        },
+        {
+          "start": 21.256,
+          "end": 21.863
+        }
+      ]
+    },
+    {
+      "chinese": "赵一荻",
+      "pinyin": "Zhào Yīdí",
+      "english": "Zhao Yidi (Edith Zhao), Zhang's companion and later wife",
+      "spans": [
+        {
+          "start": 24.178,
+          "end": 25.184
+        },
+        {
+          "start": 27.436,
+          "end": 28.439
+        }
+      ]
+    },
+    {
+      "chinese": "一直",
+      "pinyin": "yìzhí",
+      "english": "all along, always",
+      "spans": [
+        {
+          "start": 30.696,
+          "end": 31.465
+        },
+        {
+          "start": 33.736,
+          "end": 34.505
+        }
+      ]
+    },
+    {
+      "chinese": "陪在他身边",
+      "pinyin": "péi zài tā shēnbiān",
+      "english": "stayed by his side",
+      "spans": [
+        {
+          "start": 36.742,
+          "end": 37.951
+        },
+        {
+          "start": 40.182,
+          "end": 41.616
+        }
+      ]
+    }
+  ]
+}

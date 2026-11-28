@@ -22,3 +22,23 @@ export function citationPinyin(chinese: string): string {
 export function withSpokenPinyin<T extends { chinese: string; pinyin?: string }>(line: T): T & { pinyin: string } {
   return { ...line, pinyin: spokenPinyin(line.chinese) }
 }
+
+
+export type CharPinyinUnit = { char: string; pinyin: string }
+
+/** Per-character spoken pinyin for a line (sandhi applied to the whole line). */
+export function charPinyinUnits(chinese: string): CharPinyinUnit[] {
+  const han = Array.from(chinese).filter((c) => /[\u4e00-\u9fff]/.test(c)).join('')
+  const pys = han
+    ? (pinyin(han, { toneType: 'symbol', type: 'array', toneSandhi: true }) as string[])
+    : []
+  let i = 0
+  return Array.from(chinese).map((ch) => {
+    if (/[\u4e00-\u9fff]/.test(ch)) {
+      const py = pys[i] ?? ''
+      i += 1
+      return { char: ch, pinyin: py }
+    }
+    return { char: ch, pinyin: '' }
+  })
+}

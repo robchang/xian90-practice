@@ -10,13 +10,15 @@ import SpeakScreen from './screens/SpeakScreen'
 import QuizScreen from './screens/QuizScreen'
 import ArchiveScreen from './screens/ArchiveScreen'
 import ProgressScreen from './screens/ProgressScreen'
+import CharsScreen from './screens/CharsScreen'
 import MySpeechScreen from './screens/MySpeechScreen'
 import { assetUrl } from './assetUrl'
+import { loadUnknownChars, toggleUnknownChar } from './unknownChars'
 import { buildTodayFocus, computeWeaknesses, type FocusItem } from './focusSession'
 import './App.css'
 import BuildFooter, { SwUpdateBanner } from './components/BuildFooter'
 
-type Screen = 'today' | 'speak' | 'speech' | 'myspeech' | 'quiz' | 'archive' | 'progress'
+type Screen = 'today' | 'speak' | 'speech' | 'chars' | 'myspeech' | 'quiz' | 'archive' | 'progress'
 type SpeakDemo = 'prompt' | 'result' | 'drill'
 
 function readDemo(): string | null {
@@ -112,9 +114,14 @@ function App() {
   const demo = readDemo()
   const speakDemo: SpeakDemo | null =
     demo === 'prompt' || demo === 'result' || demo === 'drill' ? demo : null
-  const [currentScreen, setCurrentScreen] = useState<Screen>(
-    speakDemo ? 'speak' : demo === 'myspeech' || demo === 'myspeech-simple' ? 'myspeech' : 'today'
-  )
+  const [currentScreen, setCurrentScreen] = useState<Screen>(() => {
+    if (speakDemo) return 'speak'
+    if (demo === 'myspeech' || demo === 'myspeech-simple') return 'myspeech'
+    if (demo === 'chars') return 'chars'
+    if (demo === 'script' || demo === 'tricky-words') return 'speech'
+    return 'today'
+  })
+  const [unknownChars, setUnknownChars] = useState<string[]>(() => loadUnknownChars())
   const [canonicalLines, setCanonicalLines] = useState<SpeechLine[]>([])
   const [speechDoc, setSpeechDoc] = useState<SpeechDocument | null>(null)
   const [speechLines, setSpeechLines] = useState<SpeechLine[]>([])
@@ -273,7 +280,23 @@ function App() {
           />
         )}
         {currentScreen === 'speech' && (
-          <SpeechScreen key={speechLines.map((l) => l.chinese).join('|')} speechLines={speechLines} originals={canonicalLines} />
+          <SpeechScreen
+            key={speechLines.map((l) => l.chinese).join('|')}
+            speechLines={speechLines}
+            originals={canonicalLines}
+            unknownChars={unknownChars}
+            onToggleChar={(ch) => setUnknownChars((prev) => toggleUnknownChar(ch, prev))}
+            initialView={demo === 'script' || demo === 'tricky-words' ? 'script' : undefined}
+            autoOpenWords={demo === 'tricky-words'}
+          />
+        )}
+        {currentScreen === 'chars' && (
+          <CharsScreen
+            canonicalLines={canonicalLines}
+            unknownChars={unknownChars}
+            onUnknownChange={setUnknownChars}
+            onOpenScript={() => setCurrentScreen('speech')}
+          />
         )}
         {currentScreen === 'myspeech' && (
           <MySpeechScreen
@@ -322,9 +345,13 @@ function App() {
           <span className="nav-icon" aria-hidden="true">🎤</span>
           Speak
         </button>
-        <button className={currentScreen === 'speech' ? 'active' : ''} onClick={() => setCurrentScreen('speech')}>
+        <button className={currentScreen === 'speech' ? 'active' : ''} onClick={() => setCurrentScreen('speech')} data-testid="nav-speech">
           <span className="nav-icon" aria-hidden="true">📜</span>
           Speech
+        </button>
+        <button className={currentScreen === 'chars' ? 'active' : ''} onClick={() => setCurrentScreen('chars')} data-testid="nav-chars">
+          <span className="nav-icon" aria-hidden="true">字</span>
+          Chars
         </button>
         <button className={currentScreen === 'myspeech' ? 'active' : ''} onClick={() => setCurrentScreen('myspeech')} data-testid="nav-myspeech">
           <span className="nav-icon" aria-hidden="true">📝</span>

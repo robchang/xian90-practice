@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "audio": "words.mp3",
+  "voice": "zh-CN-YunxiNeural",
+  "words": [
+    {
+      "chinese": "每年",
+      "pinyin": "měinián",
+      "english": "every year",
+      "spans": [
+        {
+          "start": 0.0,
+          "end": 0.876
+        },
+        {
+          "start": 3.107,
+          "end": 3.9
+        }
+      ]
+    },
+    {
+      "chinese": "看望",
+      "pinyin": "kànwàng",
+      "english": "to visit (a person)",
+      "spans": [
+        {
+          "start": 6.113,
+          "end": 6.742
+        },
+        {
+          "start": 9.023,
+          "end": 9.653
+        }
+      ]
+    },
+    {
+      "chinese": "从来没有",
+      "pinyin": "cónglái méiyǒu",
+      "english": "never",
+      "spans": [
+        {
+          "start": 11.975,
+          "end": 12.772
+        },
+        {
+          "start": 15.121,
+          "end": 15.918
+        }
+      ]
+    },
+    {
+      "chinese": "一点",
+      "pinyin": "yìdiǎn",
+      "english": "a bit",
+      "spans": [
+        {
+          "start": 18.265,
+          "end": 18.967
+        },
+        {
+          "start": 21.254,
+          "end": 21.956
+        }
+      ]
+    },
+    {
+      "chinese": "怨恨",
+      "pinyin": "yuànhèn",
+      "english": "bitterness, resentment",
+      "spans": [
+        {
+          "start": 24.241,
+          "end": 24.967
+        },
+        {
+          "start": 27.208,
+          "end": 27.933
+        }
+      ]
+    },
+    {
+      "chinese": "一岁",
+      "pinyin": "yí suì",
+      "english": "one year old",
+      "spans": [
+        {
+          "start": 30.184,
+          "end": 30.719
+        },
+        {
+          "start": 32.994,
+          "end": 33.744
+        }
+      ]
+    }
+  ]
+}

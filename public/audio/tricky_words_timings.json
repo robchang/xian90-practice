@@ -1,0 +1,457 @@
+{
+  "version": 1,
+  "audio": "tricky_words.mp3",
+  "voice": "zh-CN-YunxiNeural",
+  "words": [
+    {
+      "chinese": "张居信",
+      "pinyin": "Zhāng Jūxìn",
+      "english": "Zhang Juxin (Rob's Chinese name)",
+      "spans": [
+        {
+          "start": 0.0,
+          "end": 1.041
+        },
+        {
+          "start": 3.284,
+          "end": 4.235
+        }
+      ]
+    },
+    {
+      "chinese": "张学良",
+      "pinyin": "Zhāng Xuéliáng",
+      "english": "Zhang Xueliang, the \"Young Marshal\" (1901–2001)",
+      "spans": [
+        {
+          "start": 6.483,
+          "end": 7.429
+        },
+        {
+          "start": 9.7,
+          "end": 10.648
+        }
+      ]
+    },
+    {
+      "chinese": "孙子",
+      "pinyin": "sūnzi",
+      "english": "grandson (son's son)",
+      "spans": [
+        {
+          "start": 12.939,
+          "end": 13.681
+        },
+        {
+          "start": 15.938,
+          "end": 16.681
+        }
+      ]
+    },
+    {
+      "chinese": "主办方",
+      "pinyin": "zhǔbànfāng",
+      "english": "the hosts / organizers",
+      "spans": [
+        {
+          "start": 18.898,
+          "end": 19.768
+        },
+        {
+          "start": 22.014,
+          "end": 22.884
+        }
+      ]
+    },
+    {
+      "chinese": "邀请",
+      "pinyin": "yāoqǐng",
+      "english": "to invite",
+      "spans": [
+        {
+          "start": 25.159,
+          "end": 25.937
+        },
+        {
+          "start": 28.255,
+          "end": 29.033
+        }
+      ]
+    },
+    {
+      "chinese": "领导",
+      "pinyin": "lǐngdǎo",
+      "english": "leaders",
+      "spans": [
+        {
+          "start": 31.336,
+          "end": 32.12
+        },
+        {
+          "start": 34.389,
+          "end": 35.172
+        }
+      ]
+    },
+    {
+      "chinese": "杨虎城",
+      "pinyin": "Yáng Hǔchéng",
+      "english": "Yang Hucheng, Northwestern Army commander",
+      "spans": [
+        {
+          "start": 37.448,
+          "end": 38.601
+        },
+        {
+          "start": 40.827,
+          "end": 41.979
+        }
+      ]
+    },
+    {
+      "chinese": "一致抗日",
+      "pinyin": "yízhì kàng Rì",
+      "english": "unite to resist Japan",
+      "spans": [
+        {
+          "start": 44.208,
+          "end": 45.349
+        },
+        {
+          "start": 47.603,
+          "end": 48.742
+        }
+      ]
+    },
+    {
+      "chinese": "西安事变",
+      "pinyin": "Xī'ān Shìbiàn",
+      "english": "the Xi'an Incident (12 Dec 1936)",
+      "spans": [
+        {
+          "start": 50.995,
+          "end": 51.991
+        },
+        {
+          "start": 54.246,
+          "end": 55.243
+        }
+      ]
+    },
+    {
+      "chinese": "失去自由",
+      "pinyin": "shīqù zìyóu",
+      "english": "to lose freedom",
+      "spans": [
+        {
+          "start": 57.501,
+          "end": 58.536
+        },
+        {
+          "start": 60.789,
+          "end": 61.825
+        }
+      ]
+    },
+    {
+      "chinese": "赵一荻",
+      "pinyin": "Zhào Yīdí",
+      "english": "Zhao Yidi (Edith Zhao), Zhang's companion and later wife",
+      "spans": [
+        {
+          "start": 64.073,
+          "end": 65.08
+        },
+        {
+          "start": 67.329,
+          "end": 68.337
+        }
+      ]
+    },
+    {
+      "chinese": "一直",
+      "pinyin": "yìzhí",
+      "english": "all along, always",
+      "spans": [
+        {
+          "start": 70.598,
+          "end": 71.367
+        },
+        {
+          "start": 73.638,
+          "end": 74.426
+        }
+      ]
+    },
+    {
+      "chinese": "一岁",
+      "pinyin": "yí suì",
+      "english": "one year old",
+      "spans": [
+        {
+          "start": 76.692,
+          "end": 77.215
+        },
+        {
+          "start": 79.501,
+          "end": 80.024
+        }
+      ]
+    },
+    {
+      "chinese": "看望",
+      "pinyin": "kànwàng",
+      "english": "to visit (a person)",
+      "spans": [
+        {
+          "start": 82.261,
+          "end": 82.901
+        },
+        {
+          "start": 85.172,
+          "end": 85.812
+        }
+      ]
+    },
+    {
+      "chinese": "此后",
+      "pinyin": "cǐhòu",
+      "english": "after this, afterward",
+      "spans": [
+        {
+          "start": 88.121,
+          "end": 88.894
+        },
+        {
+          "start": 91.175,
+          "end": 91.948
+        }
+      ]
+    },
+    {
+      "chinese": "那么多",
+      "pinyin": "nàme duō",
+      "english": "so much, that many",
+      "spans": [
+        {
+          "start": 94.204,
+          "end": 94.856
+        },
+        {
+          "start": 97.121,
+          "end": 97.772
+        }
+      ]
+    },
+    {
+      "chinese": "从来",
+      "pinyin": "cónglái",
+      "english": "always; with 没有, never",
+      "spans": [
+        {
+          "start": 100.06,
+          "end": 100.653
+        },
+        {
+          "start": 102.913,
+          "end": 103.496
+        }
+      ]
+    },
+    {
+      "chinese": "怨恨",
+      "pinyin": "yuànhèn",
+      "english": "bitterness, resentment",
+      "spans": [
+        {
+          "start": 105.768,
+          "end": 106.484
+        },
+        {
+          "start": 108.736,
+          "end": 109.452
+        }
+      ]
+    },
+    {
+      "chinese": "后来我明白了",
+      "pinyin": "hòulái wǒ míngbai le",
+      "english": "later I understood",
+      "spans": [
+        {
+          "start": 111.724,
+          "end": 112.83
+        },
+        {
+          "start": 115.158,
+          "end": 116.263
+        }
+      ]
+    },
+    {
+      "chinese": "问心无愧",
+      "pinyin": "wènxīn-wúkuì",
+      "english": "to have a clear conscience",
+      "spans": [
+        {
+          "start": 118.54,
+          "end": 119.751
+        },
+        {
+          "start": 122.001,
+          "end": 123.212
+        }
+      ]
+    },
+    {
+      "chinese": "不是自己",
+      "pinyin": "bú shì zìjǐ",
+      "english": "not himself",
+      "spans": [
+        {
+          "start": 125.456,
+          "end": 126.263
+        },
+        {
+          "start": 128.64,
+          "end": 129.446
+        }
+      ]
+    },
+    {
+      "chinese": "国家",
+      "pinyin": "guójiā",
+      "english": "the country",
+      "spans": [
+        {
+          "start": 131.832,
+          "end": 132.577
+        },
+        {
+          "start": 134.862,
+          "end": 135.607
+        }
+      ]
+    },
+    {
+      "chinese": "同胞",
+      "pinyin": "tóngbāo",
+      "english": "compatriots",
+      "spans": [
+        {
+          "start": 137.882,
+          "end": 138.555
+        },
+        {
+          "start": 140.764,
+          "end": 141.437
+        }
+      ]
+    },
+    {
+      "chinese": "不能",
+      "pinyin": "bù néng",
+      "english": "cannot; must not",
+      "spans": [
+        {
+          "start": 143.647,
+          "end": 144.156
+        },
+        {
+          "start": 146.422,
+          "end": 146.931
+        }
+      ]
+    },
+    {
+      "chinese": "忘记",
+      "pinyin": "wàngjì",
+      "english": "to forget",
+      "spans": [
+        {
+          "start": 149.209,
+          "end": 150.012
+        },
+        {
+          "start": 152.261,
+          "end": 153.063
+        }
+      ]
+    },
+    {
+      "chinese": "爱国将领",
+      "pinyin": "àiguó jiànglǐng",
+      "english": "patriotic general",
+      "spans": [
+        {
+          "start": 155.307,
+          "end": 156.332
+        },
+        {
+          "start": 158.609,
+          "end": 159.623
+        }
+      ]
+    },
+    {
+      "chinese": "下一代",
+      "pinyin": "xià yí dài",
+      "english": "the next generation",
+      "spans": [
+        {
+          "start": 161.935,
+          "end": 162.657
+        },
+        {
+          "start": 164.917,
+          "end": 165.639
+        }
+      ]
+    },
+    {
+      "chinese": "记住",
+      "pinyin": "jìzhù",
+      "english": "to remember, to keep in mind",
+      "spans": [
+        {
+          "start": 167.89,
+          "end": 168.422
+        },
+        {
+          "start": 170.73,
+          "end": 171.262
+        }
+      ]
+    },
+    {
+      "chinese": "中华民族",
+      "pinyin": "Zhōnghuá mínzú",
+      "english": "the Chinese nation",
+      "spans": [
+        {
+          "start": 173.559,
+          "end": 175.005
+        },
+        {
+          "start": 177.249,
+          "end": 178.693
+        }
+      ]
+    },
+    {
+      "chinese": "繁荣",
+      "pinyin": "fánróng",
+      "english": "prosperity",
+      "spans": [
+        {
+          "start": 181.002,
+          "end": 181.78
+        },
+        {
+          "start": 184.073,
+          "end": 185.04
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,7 @@ describe('buildCoachSummary', () => {
       { id: 'b', itemId: 'line-1', kind: 'line', chinese: lines[0].chinese, score: 96, syllableScores: [], speed: 'normal', timestamp: now, source: 'whisper' },
       { id: 'c', itemId: 'line-1', kind: 'line', chinese: lines[0].chinese, score: 94, syllableScores: [], speed: 'normal', timestamp: now - 1000, source: 'whisper' },
     ]
-    const summary = buildCoachSummary({ attempts, speechLines: lines, todayLessonLines: [lines[1]], now })
+    const summary = buildCoachSummary({ attempts, speechLines: lines, todayLessonLines: [lines[1]], now, unknownChars: ['尊', '敬'] })
     expect(summary.version).toBe(1)
     expect(summary.eventDate).toBe('2026-12-12')
     expect(summary.daysRemaining).toBeGreaterThan(0)
@@ -23,5 +23,7 @@ describe('buildCoachSummary', () => {
     expect(summary.weakWords[0].chinese).toBe('抗日')
     expect(summary.lineScores.find((l) => l.line === 1)?.status).toBe('mastered')
     expect(summary.todayFocus.some((f) => f.id === 'line-2')).toBe(true)
+    expect(summary.unknownChars).toEqual(['尊', '敬'])
   })
 })
+

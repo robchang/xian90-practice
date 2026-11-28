@@ -37,6 +37,10 @@ export interface DailyLesson {
   audioFiles?: {
     story?: string;
     vocab?: string[];
+    words?: string;
+    shadowing?: string;
+    fullNormal?: string;
+    fullSlow?: string;
   };
 }
 

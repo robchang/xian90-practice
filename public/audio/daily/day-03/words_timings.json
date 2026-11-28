@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "audio": "words.mp3",
+  "voice": "zh-CN-YunxiNeural",
+  "words": [
+    {
+      "chinese": "看望",
+      "pinyin": "kànwàng",
+      "english": "to visit (a person)",
+      "spans": [
+        {
+          "start": 0.0,
+          "end": 0.71
+        },
+        {
+          "start": 2.981,
+          "end": 3.621
+        }
+      ]
+    },
+    {
+      "chinese": "故事",
+      "pinyin": "gùshi",
+      "english": "story",
+      "spans": [
+        {
+          "start": 5.891,
+          "end": 6.47
+        },
+        {
+          "start": 8.753,
+          "end": 9.328
+        }
+      ]
+    },
+    {
+      "chinese": "感受",
+      "pinyin": "gǎnshòu",
+      "english": "to feel, sense",
+      "spans": [
+        {
+          "start": 11.616,
+          "end": 12.329
+        },
+        {
+          "start": 14.598,
+          "end": 15.311
+        }
+      ]
+    },
+    {
+      "chinese": "深爱",
+      "pinyin": "shēn'ài",
+      "english": "to love deeply",
+      "spans": [
+        {
+          "start": 17.612,
+          "end": 18.368
+        },
+        {
+          "start": 20.66,
+          "end": 21.418
+        }
+      ]
+    },
+    {
+      "chinese": "人民",
+      "pinyin": "rénmín",
+      "english": "the people",
+      "spans": [
+        {
+          "start": 23.704,
+          "end": 24.431
+        },
+        {
+          "start": 26.702,
+          "end": 27.672
+        }
+      ]
+    }
+  ]
+}

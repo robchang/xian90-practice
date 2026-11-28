@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { DailyLesson, UserProgress } from '../types';
+import WordsAudioPlayer from '../components/WordsAudioPlayer';
 
 interface ArchiveScreenProps {
   lessons: DailyLesson[];
@@ -37,6 +38,13 @@ export default function ArchiveScreen({ lessons, progress }: ArchiveScreenProps)
             ))}
           </div>
         </div>
+
+        {selectedLesson.audioFiles?.words && (
+          <WordsAudioPlayer
+            audioUrl={selectedLesson.audioFiles.words}
+            title="Lesson words audio"
+          />
+        )}
 
         <div className="practice-section">
           <h3>Practice Lines</h3>
